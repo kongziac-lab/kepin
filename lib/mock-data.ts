@@ -95,6 +95,57 @@ export const studentProfile = {
   intake: "2026 Fall"
 };
 
+/* ── 이름 불일치 알림 목록 ────────────────────────────────────────── */
+export type NameMismatchSeverity = "typo" | "major";
+
+export type NameMismatchAlert = {
+  studentId:      string;
+  nameKo:         string;
+  partner:        string;
+  nominationName: string;
+  passportName:   string;
+  distance:       number;
+  severity:       NameMismatchSeverity;
+  detectedAt:     string;   // ISO date string
+  status:         WorkflowStatus;
+};
+
+export const nameMismatchAlerts: NameMismatchAlert[] = [
+  {
+    studentId:      "KMU-2026-0412",
+    nameKo:         "안나 리",
+    partner:        "Thammasat University",
+    nominationName: "ANNA LEE",
+    passportName:   "ANNA LI",
+    distance:       2,
+    severity:       "typo",
+    detectedAt:     "2026-03-21T09:14:00Z",
+    status:         "under_review",
+  },
+  {
+    studentId:      "KMU-2026-0413",
+    nameKo:         "하루토 사토",
+    partner:        "Ritsumeikan University",
+    nominationName: "HARUTO SATO",
+    passportName:   "HARUTO SATOH",
+    distance:       1,
+    severity:       "typo",
+    detectedAt:     "2026-03-21T11:32:00Z",
+    status:         "accepted",
+  },
+  {
+    studentId:      "KMU-2026-0414",
+    nameKo:         "리우 원",
+    partner:        "Fudan University",
+    nominationName: "LIU WEN",
+    passportName:   "LIU WENG",
+    distance:       1,
+    severity:       "typo",
+    detectedAt:     "2026-03-22T08:05:00Z",
+    status:         "application_pending",
+  },
+];
+
 export const emailTemplates = [
   { title: "노미네이션 초대 메일", audience: "학생", status: "활성" },
   { title: "서류 보완 요청", audience: "학생", status: "활성" },

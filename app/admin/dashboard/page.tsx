@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PortalShell } from "@/components/portal-shell";
+import { NameMismatchPanel } from "@/components/name-mismatch-panel";
 
 const metrics = [
   { label: "전체 학생",        value: "124", sub: "+12 이번 달",    color: "#f5f0ef" },
@@ -44,6 +45,9 @@ export default function AdminDashboardPage() {
           </div>
         ))}
       </section>
+
+      {/* ── 이름 불일치 알림 ── */}
+      <NameMismatchPanel />
 
       {/* ── Weekly tasks + Quick links ── */}
       <section className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
