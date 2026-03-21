@@ -273,57 +273,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ══════════════ ADMIN + PARTNER ══════════════ */}
-        <section id="modules" className="border-t border-white/5 py-24">
-          <div className="mx-auto grid max-w-7xl gap-8 px-6 lg:grid-cols-[0.95fr_1.05fr]">
-            {/* Admin ops */}
-            <div className="glass rounded-[2rem] p-8">
-              <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-2">Admin Operations</div>
-              <div className="text-3xl font-black tracking-tight mb-8">관리자 운영 업무</div>
-              <div className="space-y-3">
-                {[
-                  { icon: "🔗", text: "파트너대학 초대 발송 및 활성화/비활성화" },
-                  { icon: "🔍", text: "학생 신청서 검토와 보완 요청" },
-                  { icon: "🎓", text: "합격 처리 및 Acceptance Letter 업로드" },
-                  { icon: "📧", text: "기숙사·수강신청·오리엔테이션 단계 메일 발송" }
-                ].map(({ icon, text }) => (
-                  <div
-                    key={text}
-                    className="flex items-center gap-3.5 rounded-2xl border border-white/6 bg-white/3 px-4 py-4 text-sm text-white/62"
-                  >
-                    <span className="text-base flex-shrink-0">{icon}</span>
-                    {text}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Partner snapshot */}
-            <div className="glass rounded-[2rem] p-8">
-              <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-2">Partner Snapshot</div>
-              <div className="text-3xl font-black tracking-tight mb-8">협정대학 활동 현황</div>
-              <div className="space-y-3">
-                {partnerUniversities.map((partner) => (
-                  <div
-                    key={partner.name}
-                    className="rounded-2xl border border-white/7 bg-black/10 px-5 py-4"
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <div className="font-semibold text-sm">{partner.name}</div>
-                        <div className="mt-0.5 text-xs text-white/36">{partner.country}</div>
-                      </div>
-                      <div className="text-right flex-shrink-0">
-                        <div className="text-lg font-bold text-red-400">{partner.nominations}명</div>
-                        <div className="text-xs text-white/36 mt-0.5">{partner.status}</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* ══════════════ FAQ ══════════════ */}
         <section id="faq" className="border-t border-white/5 flex flex-col justify-center scroll-mt-14 overflow-y-auto" style={{ height: "calc(100vh - 52px)" }}>
