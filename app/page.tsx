@@ -109,9 +109,7 @@ export default function HomePage() {
           <h1 className="text-5xl font-black leading-none tracking-[-0.05em] md:text-7xl anim-up d1">
             <span className="shimmer-text">계명대학교</span>
             <br />
-            초청교환학생을
-            <br />
-            하나의 플랫폼으로
+            초청교환학생 플랫폼
           </h1>
 
           <p className="mt-7 mx-auto max-w-xl text-lg leading-8 text-white/52 anim-up d2">

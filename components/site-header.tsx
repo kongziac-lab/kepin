@@ -46,13 +46,13 @@ export function SiteHeader() {
 
         {/* Auth buttons */}
         <div className="flex items-center gap-2">
-          <Link href="/auth/student" className="button-secondary px-4 py-2.5 text-sm">
+          <Link href="/auth/student" className="button-secondary px-3 py-1.5 text-xs">
             Student
           </Link>
-          <Link href="/auth/partner" className="button-secondary hidden px-4 py-2.5 text-sm md:inline-flex">
+          <Link href="/auth/partner" className="button-secondary hidden px-3 py-1.5 text-xs md:inline-flex">
             Partner
           </Link>
-          <Link href="/admin/login" className="button-primary px-4 py-2.5 text-sm">
+          <Link href="/admin/login" className="button-primary px-3 py-1.5 text-xs">
             Admin
           </Link>
         </div>

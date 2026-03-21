@@ -159,9 +159,10 @@ select.input option {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 0.875rem;
+  border-radius: 0.75rem;
   background: linear-gradient(135deg, #b91c1c, #dc2626);
-  padding: 0.875rem 1.75rem;
+  padding: 0.65rem 1.3rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: white;
   border: 1px solid rgba(255, 100, 80, 0.25);
@@ -184,10 +185,11 @@ select.input option {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 0.875rem;
+  border-radius: 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.05);
-  padding: 0.875rem 1.75rem;
+  padding: 0.65rem 1.3rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #f5f0ef;
   transition: all 0.3s ease;
