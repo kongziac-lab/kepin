@@ -1,5 +1,7 @@
 import { OtpLogin } from "@/components/otp-login";
 
+export const dynamic = "force-dynamic";
+
 export default function AdminLoginPage() {
   return (
     <OtpLogin
