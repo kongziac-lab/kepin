@@ -124,11 +124,14 @@ export default function HomePage() {
             </p>
 
             <div className="mt-10 flex flex-wrap justify-center gap-4 anim-up d3">
-              <Link href="/student/dashboard" className="btn-hero">
+              <Link href="/auth/student" className="btn-hero">
                 학생 포털 →
               </Link>
-              <Link href="/partner/dashboard" className="btn-hero">
+              <Link href="/auth/partner" className="btn-hero">
                 파트너 포털 →
+              </Link>
+              <Link href="/admin/login" className="btn-hero">
+                관리자 포털 →
               </Link>
             </div>
           </div>
