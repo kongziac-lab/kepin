@@ -8,7 +8,22 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
-    await supabase.auth.exchangeCodeForSession(code);
+    const { data } = await supabase.auth.exchangeCodeForSession(code);
+
+    // If next is an admin/partner/student path, verify role matches
+    if (data.user && next.startsWith("/admin")) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: profile } = await (supabase as any)
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .single();
+
+      if (!profile || profile.role !== "admin") {
+        await supabase.auth.signOut();
+        return NextResponse.redirect(`${origin}/admin/login?error=unauthorized`);
+      }
+    }
   }
 
   return NextResponse.redirect(`${origin}${next}`);

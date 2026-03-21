@@ -9,6 +9,7 @@ export default function AdminLoginPage() {
       title="관리자 로그인"
       description="계명대학교 국제처 관리자 전용 포털입니다."
       accentColor="bg-red-600"
+      mode="magic-link"
     />
   );
 }
