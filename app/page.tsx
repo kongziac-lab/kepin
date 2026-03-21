@@ -134,7 +134,7 @@ export default function HomePage() {
           </div>
 
           {/* Marquee — pinned to bottom of screen */}
-          <div className="border-y border-white/5 py-4 marquee-wrap">
+          <div className="border-y border-white/5 py-4 mt-6 marquee-wrap">
             <div className="marquee-track">
               {[...marqueeNames, ...marqueeNames].map((name, i) => (
                 <span
