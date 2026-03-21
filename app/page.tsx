@@ -312,16 +312,15 @@ export default function HomePage() {
               노미네이션을 받으셨나요? 지금 바로 Kepin에서 지원을 완료하세요.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/auth/student" className="button-primary px-8 py-4 text-base">
-                🎓 학생 지원하기
+              <Link href="/auth/student" className="btn-hero">
+                학생 포털 →
               </Link>
-              <Link href="/auth/partner" className="button-secondary px-8 py-4 text-base">
-                🏛️ 파트너 포털
+              <Link href="/auth/partner" className="btn-hero">
+                파트너 포털 →
               </Link>
             </div>
             <div className="mt-10 flex flex-wrap justify-center gap-6 text-sm text-white/26">
               <span>🔒 암호화 보안</span>
-              <span>🌏 EN · KO · ZH</span>
               <span>💬 24/7 AI 챗봇</span>
             </div>
           </div>
@@ -356,7 +355,7 @@ export default function HomePage() {
                 <div className="space-y-2.5 text-sm text-white/42">
                   <span className="block">Keimyung University</span>
                   <span className="block">Daegu, Republic of Korea</span>
-                  <span className="block">국제교류처</span>
+                  <span className="block">국제처</span>
                 </div>
               </div>
             </div>

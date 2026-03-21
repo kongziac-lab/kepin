@@ -512,7 +512,7 @@ export default function ApplyPage() {
               </div>
               <div>
                 <p className="text-white/70 font-semibold mb-1">4. 제3자 제공</p>
-                <p>수집된 개인정보는 계명대학교 국제교류처 외 제3자에게 제공되지 않습니다. 단, 법령에 의한 경우는 예외로 합니다.</p>
+                <p>수집된 개인정보는 계명대학교 국제처 외 제3자에게 제공되지 않습니다. 단, 법령에 의한 경우는 예외로 합니다.</p>
               </div>
               <div>
                 <p className="text-white/70 font-semibold mb-1">5. 동의 거부 권리</p>
