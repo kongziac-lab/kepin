@@ -136,15 +136,41 @@ export function PartnerMap() {
           );
         });
 
-        // KMU home marker
-        L.circleMarker([35.83, 128.53], {
-          radius:      14,
-          fillColor:   "#2563EB",
-          color:       "#fff",
-          weight:      2.5,
-          opacity:     1,
-          fillOpacity: 1,
-        })
+        // KMU home marker — pulsing divIcon
+        const kmuStyle = document.createElement("style");
+        kmuStyle.textContent = `
+          @keyframes kmu-ping {
+            0%   { transform: scale(1);   opacity: 0.8; }
+            70%  { transform: scale(2.6); opacity: 0;   }
+            100% { transform: scale(1);   opacity: 0;   }
+          }
+          .kmu-wrap {
+            position: relative;
+            width: 10px; height: 10px;
+          }
+          .kmu-core {
+            position: absolute; inset: 0;
+            background: #2563EB;
+            border-radius: 50%;
+          }
+          .kmu-ring {
+            position: absolute; inset: 0;
+            background: #2563EB;
+            border-radius: 50%;
+            animation: kmu-ping 1.6s ease-out infinite;
+          }
+        `;
+        document.head.appendChild(kmuStyle);
+
+        const kmuIcon = L.divIcon({
+          className: "",
+          html: `<div class="kmu-wrap"><div class="kmu-ring"></div><div class="kmu-core"></div></div>`,
+          iconSize:   [10, 10],
+          iconAnchor: [5, 5],
+          popupAnchor: [0, -8],
+        });
+
+        L.marker([35.83, 128.53], { icon: kmuIcon })
           .addTo(map)
           .bindPopup(
             `<div style="font-weight:700">Keimyung University<br>

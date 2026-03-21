@@ -196,7 +196,10 @@ export default function HomePage() {
                 Partner university (no active nomination)
               </div>
               <div className="flex items-center gap-2 text-xs text-white/45">
-                <span className="inline-block h-3 w-3 rounded-full bg-blue-600" style={{ border: "2px solid white" }} />
+                <span className="relative inline-flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75" />
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-blue-600" />
+                </span>
                 Keimyung University (KMU)
               </div>
             </div>
