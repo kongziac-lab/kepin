@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { PortalShell } from "@/components/portal-shell";
 import { NameMismatchPanel } from "@/components/name-mismatch-panel";
+import { partnerNominations, nominationSummary } from "@/lib/mock-data";
+
+const submittedCount = partnerNominations.filter(p => p.submissionStatus !== "not_submitted").length;
+const days = Math.ceil((new Date(nominationSummary.deadline).getTime() - Date.now()) / 86400000);
 
 const metrics = [
   { label: "전체 학생",        value: "124", sub: "+12 이번 달",    color: "#f5f0ef" },
@@ -48,6 +52,69 @@ export default function AdminDashboardPage() {
 
       {/* ── 이름 불일치 알림 ── */}
       <NameMismatchPanel />
+
+      {/* ── 노미네이션 현황 요약 ── */}
+      <section
+        className="rounded-[2rem] p-5"
+        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <div className="font-bold text-white">노미네이션 현황</div>
+            <div className="text-xs text-white/35 mt-0.5">
+              마감 {nominationSummary.deadline} · {days > 0 ? `D-${days}` : "마감"}
+            </div>
+          </div>
+          <Link
+            href="/admin/nominations"
+            className="text-xs px-3 py-1.5 rounded-xl border border-white/10 text-white/40 hover:text-white hover:border-white/20 transition"
+          >
+            전체 보기 →
+          </Link>
+        </div>
+
+        {/* 대학별 진행 바 */}
+        <div className="space-y-2 mb-4">
+          {partnerNominations.filter(p => p.submissionStatus !== "not_submitted").map((p) => (
+            <div key={p.partnerId} className="flex items-center gap-3">
+              <span className="text-sm shrink-0">{p.flag}</span>
+              <span className="text-xs text-white/55 w-40 truncate shrink-0">{p.university}</span>
+              <div className="flex-1 h-1.5 rounded-full bg-white/8 overflow-hidden">
+                <div
+                  className={`h-full rounded-full ${p.submissionStatus === "submitted" ? "bg-green-500" : "bg-amber-400"}`}
+                  style={{ width: `${Math.min(Math.round((p.students.length / p.quota) * 100), 100)}%` }}
+                />
+              </div>
+              <span className="text-xs text-white/35 shrink-0 w-12 text-right">
+                {p.students.length}/{p.quota}
+              </span>
+              {p.students.some(s => s.hasNameMismatch) && (
+                <span className="text-[10px] text-amber-400 shrink-0">⚠</span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* 미제출 대학 */}
+        <div className="rounded-xl bg-white/3 border border-white/6 px-4 py-3 flex items-center justify-between">
+          <span className="text-xs text-white/45">
+            미제출 대학
+            <span className="ml-2 font-bold text-amber-400">
+              {partnerNominations.filter(p => p.submissionStatus === "not_submitted").length}곳
+            </span>
+            <span className="ml-2 text-white/25">
+              ({partnerNominations.filter(p => p.submissionStatus === "not_submitted").map(p => p.university).slice(0, 2).join(", ")}
+              {partnerNominations.filter(p => p.submissionStatus === "not_submitted").length > 2 ? ` 외 ${partnerNominations.filter(p => p.submissionStatus === "not_submitted").length - 2}곳` : ""})
+            </span>
+          </span>
+          <Link
+            href="/admin/emails"
+            className="text-xs px-2.5 py-1 rounded-lg bg-red-700/70 hover:bg-red-600 text-white font-semibold transition"
+          >
+            리마인드 발송
+          </Link>
+        </div>
+      </section>
 
       {/* ── Weekly tasks + Quick links ── */}
       <section className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">

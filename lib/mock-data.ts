@@ -165,6 +165,139 @@ export const partnerInvites = [
   { school: "Tunghai University", manager: "Pei Lin", email: "pei.lin@thu.edu.tw", status: "비활성" }
 ];
 
+/* ── 노미네이션 관리 데이터 ─────────────────────────────────────────── */
+export type NominationStudentStatus = "confirmed" | "pending" | "rejected" | "withdrawn";
+export type PartnerSubmissionStatus = "submitted" | "not_submitted" | "partial" | "closed";
+
+export type NominationStudent = {
+  id:               string;
+  nameEn:           string;
+  major:            string;
+  nominationStatus: NominationStudentStatus;
+  submittedAt:      string;
+  appStatus?:       WorkflowStatus;
+  hasNameMismatch?: boolean;
+};
+
+export type PartnerNomination = {
+  partnerId:        number;
+  university:       string;
+  country:          string;
+  contact:          string;
+  email:            string;
+  flag:             string;
+  quota:            number;
+  deadline:         string;   // ISO date
+  submissionStatus: PartnerSubmissionStatus;
+  students:         NominationStudent[];
+};
+
+export const partnerNominations: PartnerNomination[] = [
+  {
+    partnerId: 1, university: "Thammasat University", country: "Thailand", flag: "🇹🇭",
+    contact: "Siriporn K.", email: "intl@tu.ac.th", quota: 10, deadline: "2026-04-30",
+    submissionStatus: "submitted",
+    students: [
+      { id: "KMU-2026-0412", nameEn: "Anna Lee",      major: "Business Administration", nominationStatus: "confirmed", submittedAt: "2026-03-10T09:00:00Z", appStatus: "under_review",        hasNameMismatch: true  },
+      { id: "KMU-2026-0415", nameEn: "Pim Wattana",   major: "Economics",               nominationStatus: "confirmed", submittedAt: "2026-03-10T09:05:00Z", appStatus: "application_pending", hasNameMismatch: false },
+      { id: "KMU-2026-0416", nameEn: "Nong Chaiwat",  major: "Political Science",        nominationStatus: "confirmed", submittedAt: "2026-03-10T09:10:00Z", appStatus: "nomination_submitted",hasNameMismatch: false },
+      { id: "KMU-2026-0417", nameEn: "Sira Khamkong", major: "International Relations",  nominationStatus: "pending",   submittedAt: "2026-03-15T14:00:00Z", appStatus: undefined,             hasNameMismatch: false },
+    ],
+  },
+  {
+    partnerId: 2, university: "Fudan University", country: "China", flag: "🇨🇳",
+    contact: "Li Wei", email: "exchange@fudan.edu.cn", quota: 8, deadline: "2026-04-30",
+    submissionStatus: "submitted",
+    students: [
+      { id: "KMU-2026-0414", nameEn: "Liu Wen",   major: "Korean Language",  nominationStatus: "confirmed", submittedAt: "2026-03-12T10:00:00Z", appStatus: "application_pending", hasNameMismatch: true  },
+      { id: "KMU-2026-0418", nameEn: "Zhang Mei",  major: "Media Studies",    nominationStatus: "confirmed", submittedAt: "2026-03-12T10:05:00Z", appStatus: "nomination_submitted",hasNameMismatch: false },
+      { id: "KMU-2026-0419", nameEn: "Chen Xiong", major: "Economics",        nominationStatus: "rejected",  submittedAt: "2026-03-12T10:10:00Z", appStatus: undefined,             hasNameMismatch: false },
+    ],
+  },
+  {
+    partnerId: 3, university: "Ritsumeikan University", country: "Japan", flag: "🇯🇵",
+    contact: "Yuki Tanaka", email: "oia@ritsumei.ac.jp", quota: 6, deadline: "2026-04-30",
+    submissionStatus: "submitted",
+    students: [
+      { id: "KMU-2026-0413", nameEn: "Haruto Sato",  major: "Computer Engineering", nominationStatus: "confirmed", submittedAt: "2026-03-08T08:00:00Z", appStatus: "accepted",            hasNameMismatch: true  },
+      { id: "KMU-2026-0420", nameEn: "Yui Nakamura", major: "Architecture",          nominationStatus: "confirmed", submittedAt: "2026-03-08T08:05:00Z", appStatus: "under_review",        hasNameMismatch: false },
+    ],
+  },
+  {
+    partnerId: 4, university: "University of Auckland", country: "New Zealand", flag: "🇳🇿",
+    contact: "Emma Brown", email: "exchange@auckland.ac.nz", quota: 4, deadline: "2026-04-30",
+    submissionStatus: "submitted",
+    students: [
+      { id: "KMU-2026-0421", nameEn: "Emma Park",   major: "Marine Science", nominationStatus: "confirmed", submittedAt: "2026-03-14T11:00:00Z", appStatus: "application_pending", hasNameMismatch: false },
+      { id: "KMU-2026-0422", nameEn: "James Wilson", major: "Engineering",    nominationStatus: "pending",   submittedAt: "2026-03-18T15:00:00Z", appStatus: undefined,             hasNameMismatch: false },
+    ],
+  },
+  {
+    partnerId: 7, university: "Tunghai University", country: "Taiwan", flag: "🇹🇼",
+    contact: "Pei Lin", email: "pei.lin@thu.edu.tw", quota: 6, deadline: "2026-04-30",
+    submissionStatus: "partial",
+    students: [
+      { id: "KMU-2026-0423", nameEn: "Lin Wei-Chen", major: "Fine Arts",  nominationStatus: "confirmed", submittedAt: "2026-03-16T09:00:00Z", appStatus: "nomination_submitted", hasNameMismatch: false },
+    ],
+  },
+  {
+    partnerId: 8, university: "Chiang Mai University", country: "Thailand", flag: "🇹🇭",
+    contact: "Nong P.", email: "intl@cmu.ac.th", quota: 8, deadline: "2026-04-30",
+    submissionStatus: "submitted",
+    students: [
+      { id: "KMU-2026-0424", nameEn: "Kanya Sriporn",  major: "Tourism Management", nominationStatus: "confirmed", submittedAt: "2026-03-11T07:00:00Z", appStatus: "under_review",        hasNameMismatch: false },
+      { id: "KMU-2026-0425", nameEn: "Tanawat Boonma", major: "Business",            nominationStatus: "confirmed", submittedAt: "2026-03-11T07:05:00Z", appStatus: "application_pending", hasNameMismatch: false },
+    ],
+  },
+  {
+    partnerId: 9, university: "Peking University", country: "China", flag: "🇨🇳",
+    contact: "Zhang Min", email: "oia@pku.edu.cn", quota: 5, deadline: "2026-04-30",
+    submissionStatus: "not_submitted",
+    students: [],
+  },
+  {
+    partnerId: 10, university: "Waseda University", country: "Japan", flag: "🇯🇵",
+    contact: "Kenji Ito", email: "exchange@waseda.jp", quota: 8, deadline: "2026-04-30",
+    submissionStatus: "not_submitted",
+    students: [],
+  },
+  {
+    partnerId: 11, university: "National Taiwan University", country: "Taiwan", flag: "🇹🇼",
+    contact: "Chen Yu", email: "oia@ntu.edu.tw", quota: 4, deadline: "2026-04-30",
+    submissionStatus: "not_submitted",
+    students: [],
+  },
+  {
+    partnerId: 5, university: "Mahidol University", country: "Thailand", flag: "🇹🇭",
+    contact: "Pim Chan", email: "pim@mahidol.ac.th", quota: 4, deadline: "2026-04-30",
+    submissionStatus: "not_submitted",
+    students: [],
+  },
+  {
+    partnerId: 6, university: "Kansai University", country: "Japan", flag: "🇯🇵",
+    contact: "Yuta Mori", email: "y.mori@kansai.ac.jp", quota: 4, deadline: "2026-04-30",
+    submissionStatus: "not_submitted",
+    students: [],
+  },
+  {
+    partnerId: 12, university: "Hanyang University", country: "Korea", flag: "🇰🇷",
+    contact: "Park Ji-su", email: "global@hanyang.ac.kr", quota: 4, deadline: "2026-04-30",
+    submissionStatus: "not_submitted",
+    students: [],
+  },
+];
+
+export const nominationSummary = {
+  totalPartners:    12,
+  submittedCount:   6,
+  totalNominations: 16,
+  confirmedCount:   13,
+  pendingCount:     2,
+  rejectedCount:    1,
+  deadline:         "2026-04-30",
+  mismatchCount:    3,
+};
+
 export function statusLabel(status: WorkflowStatus) {
   return workflow.find((step) => step.key === status)?.title ?? status;
 }

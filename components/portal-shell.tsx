@@ -24,8 +24,9 @@ const navByArea = {
   ],
   admin: [
     { href: "/admin/dashboard",      label: "대시보드",    icon: "⊞"  },
-    { href: "/admin/partners",       label: "파트너 관리", icon: "🏛️" },
-    { href: "/admin/students",       label: "학생 관리",   icon: "👥" },
+    { href: "/admin/partners",       label: "파트너 관리",     icon: "🏛️" },
+    { href: "/admin/nominations",    label: "노미네이션 관리", icon: "📋" },
+    { href: "/admin/students",       label: "학생 관리",       icon: "👥" },
     { href: "/admin/files",          label: "파일 관리",   icon: "🗂️" },
     { href: "/admin/emails",         label: "이메일 관리", icon: "✉️" },
     { href: "/admin/orientation",    label: "오리엔테이션", icon: "📁" }
