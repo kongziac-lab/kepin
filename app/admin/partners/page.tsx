@@ -113,6 +113,12 @@ export default function AdminPartnersPage() {
   }
   function cancelEdit() { setEditId(null); setEditForm(null); }
 
+  /* ── 삭제 ───────────────────────────────────────────────── */
+  function handleDelete(id: number) {
+    if (!confirm("이 파트너대학을 삭제하시겠습니까?")) return;
+    setPartners((prev) => prev.filter((p) => p.id !== id));
+  }
+
   /* ── 필터 ───────────────────────────────────────────────── */
   const filtered = partners.filter(
     (p) =>
@@ -268,7 +274,7 @@ export default function AdminPartnersPage() {
         <div className="panel rounded-2xl overflow-hidden">
           <div className="flex items-center justify-between px-6 py-4 border-b border-white/8">
             <div>
-              <h2 className="font-semibold text-white">등록된 파트너대학</h2>
+              <h2 className="font-semibold text-white whitespace-nowrap">대학 조회</h2>
               <p className="text-xs text-white/40 mt-0.5">총 {partners.length}개 대학</p>
             </div>
             <input
@@ -283,7 +289,7 @@ export default function AdminPartnersPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/8 bg-white/2">
-                  {["대학명", "국가", "담당자", "이메일", "전화번호", "상태", "노미네이션", "등록일", ""].map((h) => (
+                  {["대학명", "국가", "담당자", "이메일", "전화번호", "상태", "노미네이션", "등록일", "", ""].map((h) => (
                     <th key={h} className="text-left px-4 py-3 text-xs text-white/35 font-semibold whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -305,7 +311,7 @@ export default function AdminPartnersPage() {
                       </td>
                       <td className="px-4 py-2 text-white/50">{p.nominations}</td>
                       <td className="px-4 py-2 text-white/40 text-xs">{p.registeredAt}</td>
-                      <td className="px-3 py-2">
+                      <td className="px-3 py-2" colSpan={2}>
                         <div className="flex gap-2">
                           <button onClick={saveEdit} className="text-xs px-3 py-1 rounded-lg bg-red-700 hover:bg-red-600 text-white font-semibold transition">저장</button>
                           <button onClick={cancelEdit} className="text-xs px-3 py-1 rounded-lg border border-white/15 text-white/50 hover:bg-white/5 transition">취소</button>
@@ -333,11 +339,19 @@ export default function AdminPartnersPage() {
                           수정
                         </button>
                       </td>
+                      <td className="px-2 py-3">
+                        <button
+                          onClick={() => handleDelete(p.id)}
+                          className="text-xs px-3 py-1.5 rounded-lg border border-red-900/40 text-red-400/70 hover:text-red-300 hover:border-red-600/50 transition"
+                        >
+                          삭제
+                        </button>
+                      </td>
                     </tr>
                   )
                 )}
                 {filtered.length === 0 && (
-                  <tr><td colSpan={9} className="px-4 py-8 text-center text-white/30 text-sm">검색 결과가 없습니다.</td></tr>
+                  <tr><td colSpan={10} className="px-4 py-8 text-center text-white/30 text-sm">검색 결과가 없습니다.</td></tr>
                 )}
               </tbody>
             </table>
