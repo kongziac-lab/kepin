@@ -16,7 +16,7 @@ export function SiteHeader() {
         borderBottom: "1px solid rgba(185, 28, 28, 0.14)"
       }}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-4xl items-center justify-between px-5 py-2">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <div
