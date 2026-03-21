@@ -30,9 +30,14 @@ const partnerData = [
   { lat: 19.07,  lng: 72.87,  name: "University of Mumbai",              country: "India",       students: 0,  active: false },
 ];
 
+const INIT_CENTER: [number, number] = [25, 20];
+const INIT_ZOOM = 2;
+
 export function PartnerMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   const initiated = useRef(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mapInstance = useRef<any>(null);
 
   useEffect(() => {
     if (initiated.current || !mapRef.current) return;
@@ -55,11 +60,33 @@ export function PartnerMap() {
         }
 
         const map = L.map(mapRef.current!, {
-          center: [25, 20],
-          zoom: 2,
+          center: INIT_CENTER,
+          zoom: INIT_ZOOM,
           zoomControl: true,
           attributionControl: false,
         });
+        mapInstance.current = map;
+
+        // Custom reset-zoom control
+        const ResetControl = L.Control.extend({
+          options: { position: "topleft" },
+          onAdd() {
+            const btn = L.DomUtil.create("button", "leaflet-bar leaflet-control");
+            btn.title = "원래 크기로";
+            btn.style.cssText = `
+              width:26px; height:26px; line-height:26px; font-size:14px;
+              cursor:pointer; background:#1e0d0d; color:#f87171;
+              border:none; display:flex; align-items:center; justify-content:center;
+            `;
+            btn.innerHTML = "⌂";
+            L.DomEvent.on(btn, "click", (e) => {
+              L.DomEvent.stopPropagation(e);
+              map.setView(INIT_CENTER, INIT_ZOOM);
+            });
+            return btn;
+          },
+        });
+        new ResetControl().addTo(map);
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           maxZoom: 10,
@@ -138,7 +165,9 @@ export function PartnerMap() {
       id="partner-map-el"
       ref={mapRef}
       style={{
-        height: "480px",
+        height: "calc(100vh - 340px)",
+        minHeight: "340px",
+        maxHeight: "540px",
         width: "100%",
         background: "#1a0808",
         borderRadius: "1rem",

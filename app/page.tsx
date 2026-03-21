@@ -149,37 +149,34 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ PARTNER MAP ══════════════ */}
-        <section id="map-section" className="border-t border-white/5 py-24">
+        <section id="map-section" className="border-t border-white/5 py-10">
           <div className="mx-auto max-w-7xl px-6">
-            <div className="text-center mb-12">
-              <div className="text-xs font-bold uppercase tracking-[0.18em] text-red-500 mb-4">
+            <div className="text-center mb-5">
+              <div className="text-xs font-bold uppercase tracking-[0.18em] text-red-500 mb-3">
                 Partner Network
               </div>
-              <h2 className="text-4xl font-bold tracking-tight md:text-5xl">
+              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
                 Partner Universities Worldwide
               </h2>
-              <p className="mt-4 text-base text-white/40">
-                노미네이션을 제출한 협정대학이 지도에 표시됩니다.
-              </p>
             </div>
 
             {/* Map stats */}
-            <div className="grid grid-cols-2 gap-4 mb-8 md:grid-cols-4">
-              <div className="glass-r rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-red-400">247</div>
-                <div className="text-xs text-white/40 mt-1">Total Partners</div>
+            <div className="grid grid-cols-4 gap-3 mb-5">
+              <div className="glass-r rounded-lg px-3 py-2 text-center">
+                <div className="text-lg font-bold text-red-400">247</div>
+                <div className="text-[11px] text-white/40 mt-0.5">Total Partners</div>
               </div>
-              <div className="glass rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-amber-400">38</div>
-                <div className="text-xs text-white/40 mt-1">Active This Semester</div>
+              <div className="glass rounded-lg px-3 py-2 text-center">
+                <div className="text-lg font-bold text-amber-400">38</div>
+                <div className="text-[11px] text-white/40 mt-0.5">Active This Semester</div>
               </div>
-              <div className="glass rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-white">83</div>
-                <div className="text-xs text-white/40 mt-1">Countries</div>
+              <div className="glass rounded-lg px-3 py-2 text-center">
+                <div className="text-lg font-bold text-white">83</div>
+                <div className="text-[11px] text-white/40 mt-0.5">Countries</div>
               </div>
-              <div className="glass rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-emerald-400">124</div>
-                <div className="text-xs text-white/40 mt-1">Students Nominated</div>
+              <div className="glass rounded-lg px-3 py-2 text-center">
+                <div className="text-lg font-bold text-emerald-400">124</div>
+                <div className="text-[11px] text-white/40 mt-0.5">Students Nominated</div>
               </div>
             </div>
 
