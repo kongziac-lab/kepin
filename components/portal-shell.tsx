@@ -137,7 +137,7 @@ export function PortalShell({ area, title, description, children }: PortalShellP
       </div>
 
       {/* ── Content area ── */}
-      <div className="mx-auto max-w-7xl px-6 py-8">
+      <div className="mx-auto max-w-7xl px-6 pt-8 pb-24">
         {/* Page heading */}
         <div className="mb-6">
           <h1 className="text-2xl font-black tracking-tight">{title}</h1>
