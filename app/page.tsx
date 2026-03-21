@@ -149,7 +149,7 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ PARTNER MAP ══════════════ */}
-        <section id="map-section" className="border-t border-white/5 py-10">
+        <section id="map-section" className="border-t border-white/5 py-10 scroll-mt-14">
           <div className="mx-auto max-w-7xl px-6">
             <div className="text-center mb-5">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-red-500 mb-3">
@@ -202,7 +202,7 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ SYSTEM SCOPE ══════════════ */}
-        <section id="overview" className="mx-auto max-w-7xl px-6 py-24">
+        <section id="overview" className="mx-auto max-w-7xl px-6 py-24 scroll-mt-14">
           <SectionTitle
             eyebrow="System Scope"
             title="역할별 포털 분리 설계"
@@ -261,7 +261,7 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ WORKFLOW ══════════════ */}
-        <section id="workflow" className="border-t border-white/5 py-24">
+        <section id="workflow" className="border-t border-white/5 py-24 scroll-mt-14">
           <div className="mx-auto max-w-7xl px-6">
             <SectionTitle
               eyebrow="Workflow"
@@ -327,7 +327,7 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ FAQ ══════════════ */}
-        <section id="faq" className="border-t border-white/5 py-24">
+        <section id="faq" className="border-t border-white/5 py-24 scroll-mt-14">
           <div className="mx-auto max-w-3xl px-6">
             <div className="text-center mb-14">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-red-500 mb-4">FAQ</div>
