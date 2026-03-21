@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, DragEvent } from 'react';
 import { PortalShell } from '@/components/portal-shell';
 
 /* ── localStorage key shared with apply page ──────────────────────────── */
-export const PASSPORT_KEY = 'kepin_passport_v1';
+const PASSPORT_KEY = 'kepin_passport_v1';
 
 /* ── OCR simulation result ────────────────────────────────────────────── */
 const MOCK_OCR = {

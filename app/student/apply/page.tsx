@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { PortalShell } from '@/components/portal-shell';
-import { PASSPORT_KEY } from '@/app/student/passport/page';
+const PASSPORT_KEY = 'kepin_passport_v1';
 
 /* ── Nomination mock data ──────────────────────────────────────────────── */
 const nominationData = {
