@@ -155,7 +155,7 @@ export default function HomePage() {
           className="border-t border-white/5 flex flex-col scroll-mt-14"
           style={{ height: "calc(100vh - 52px)" }}
         >
-          <div className="mx-auto max-w-7xl w-full px-6 flex flex-col flex-1 overflow-hidden">
+          <div className="mx-auto max-w-7xl w-full px-6 pb-5 flex flex-col flex-1 overflow-hidden">
             {/* Title + stats row */}
             <div className="flex items-center justify-between py-3 flex-shrink-0">
               <div>
