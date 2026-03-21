@@ -126,15 +126,6 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Stats row */}
-          <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 anim-up d4 max-w-2xl mx-auto">
-            {landingStats.map((stat) => (
-              <div key={stat.label} className="metric-card text-center">
-                <div className="text-xl font-black tracking-tight text-red-400">{stat.value}</div>
-                <div className="mt-1.5 text-[11px] text-white/38 leading-tight">{stat.label}</div>
-              </div>
-            ))}
-          </div>
         </section>
 
         {/* ══════════════ MARQUEE ══════════════ */}
