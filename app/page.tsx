@@ -95,53 +95,58 @@ export default function HomePage() {
       <SiteHeader />
 
       <main>
-        {/* ══════════════ HERO ══════════════ */}
-        <section className="mx-auto max-w-7xl px-6 py-24 text-center">
-          {/* Chip */}
-          <div className="flex justify-center mb-7 anim-up">
-            <div className="chip">
-              <span className="pulse-dot" />
-              Connect the World · Keimyung University
+        {/* ══════════════ HERO + MARQUEE (one screen) ══════════════ */}
+        <section
+          style={{ minHeight: "calc(100vh - 64px)" }}
+          className="flex flex-col"
+        >
+          {/* Hero content — grows to fill space */}
+          <div className="flex-1 flex flex-col items-center justify-center text-center px-6 py-16">
+            {/* Chip */}
+            <div className="flex justify-center mb-7 anim-up">
+              <div className="chip">
+                <span className="pulse-dot" />
+                Connect the World · Keimyung University
+              </div>
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-5xl font-black leading-none tracking-[-0.05em] md:text-7xl anim-up d1">
+              <span className="shimmer-text">계명대학교</span>
+              <br />
+              초청교환학생 플랫폼
+            </h1>
+
+            <p className="mt-7 mx-auto max-w-xl text-lg leading-8 text-white/52 anim-up d2">
+              노미네이션 제출부터 입학 완료까지 — 학생·파트너대학·관리자의
+              모든 흐름을 하나의 시스템으로 연결합니다.
+            </p>
+
+            <div className="mt-10 flex flex-wrap justify-center gap-4 anim-up d3">
+              <Link href="/student/dashboard" className="button-primary">
+                학생 포털 보기 →
+              </Link>
+              <Link href="/admin/dashboard" className="button-secondary">
+                관리자 보드
+              </Link>
             </div>
           </div>
 
-          {/* Headline */}
-          <h1 className="text-5xl font-black leading-none tracking-[-0.05em] md:text-7xl anim-up d1">
-            <span className="shimmer-text">계명대학교</span>
-            <br />
-            초청교환학생 플랫폼
-          </h1>
-
-          <p className="mt-7 mx-auto max-w-xl text-lg leading-8 text-white/52 anim-up d2">
-            노미네이션 제출부터 입학 완료까지 — 학생·파트너대학·관리자의
-            모든 흐름을 하나의 시스템으로 연결합니다.
-          </p>
-
-          <div className="mt-10 flex flex-wrap justify-center gap-4 anim-up d3">
-            <Link href="/student/dashboard" className="button-primary">
-              학생 포털 보기 →
-            </Link>
-            <Link href="/admin/dashboard" className="button-secondary">
-              관리자 보드
-            </Link>
+          {/* Marquee — pinned to bottom of screen */}
+          <div className="border-y border-white/5 py-4 marquee-wrap">
+            <div className="marquee-track">
+              {[...marqueeNames, ...marqueeNames].map((name, i) => (
+                <span
+                  key={i}
+                  className="text-sm font-medium text-white/28 flex-shrink-0 flex items-center"
+                >
+                  {name}
+                  <span className="mx-8 text-red-900/50">·</span>
+                </span>
+              ))}
+            </div>
           </div>
-
         </section>
-
-        {/* ══════════════ MARQUEE ══════════════ */}
-        <div className="border-y border-white/5 py-4 marquee-wrap">
-          <div className="marquee-track">
-            {[...marqueeNames, ...marqueeNames].map((name, i) => (
-              <span
-                key={i}
-                className="text-sm font-medium text-white/28 flex-shrink-0 flex items-center"
-              >
-                {name}
-                <span className="mx-8 text-red-900/50">·</span>
-              </span>
-            ))}
-          </div>
-        </div>
 
         {/* ══════════════ PARTNER MAP ══════════════ */}
         <section id="map-section" className="border-t border-white/5 py-24">
