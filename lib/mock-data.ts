@@ -59,25 +59,31 @@ export const studentApplications = [
     id: "KMU-2026-0412",
     name: "Anna Lee",
     partner: "Thammasat University",
+    country: "Thailand",
     status: "under_review" as WorkflowStatus,
     major: "Business Administration",
-    intake: "2026 Fall"
+    intake: "2026 Fall",
+    dormitory: "기숙사 신청",
   },
   {
     id: "KMU-2026-0413",
     name: "Haruto Sato",
     partner: "Ritsumeikan University",
+    country: "Japan",
     status: "accepted" as WorkflowStatus,
     major: "Computer Engineering",
-    intake: "2026 Fall"
+    intake: "2026 Fall",
+    dormitory: "미신청",
   },
   {
     id: "KMU-2026-0414",
     name: "Liu Wen",
     partner: "Fudan University",
+    country: "China",
     status: "application_pending" as WorkflowStatus,
     major: "Korean Language",
-    intake: "2026 Fall"
+    intake: "2026 Fall",
+    dormitory: "기숙사 신청",
   }
 ];
 

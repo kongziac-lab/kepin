@@ -19,16 +19,17 @@ const statusColor: Record<string, string> = {
 
 /* ── 엑셀(CSV) 다운로드 유틸 ─────────────────────────────────────── */
 function toCSV(rows: typeof studentApplications) {
-  const headers = ["접수번호", "학생명", "파트너대학", "전공", "수학기간", "단계"];
+  const headers = ["접수번호", "학생명", "국가", "파트너대학", "수학기간", "기숙사 종류", "단계"];
   const lines = [
     headers.join(","),
     ...rows.map((r) =>
       [
         r.id,
         r.name,
+        r.country,
         r.partner,
-        r.major,
         r.intake,
+        r.dormitory,
         statusLabel(r.status),
       ]
         .map((v) => `"${String(v).replace(/"/g, '""')}"`)
@@ -218,9 +219,10 @@ export default function AdminStudentsPage() {
                   <tr>
                     <th>접수번호</th>
                     <th>학생명</th>
+                    <th>국가</th>
                     <th>파트너대학</th>
-                    <th>전공</th>
                     <th>수학기간</th>
+                    <th>기숙사 종류</th>
                     <th>단계</th>
                     <th>상세</th>
                   </tr>
@@ -230,9 +232,18 @@ export default function AdminStudentsPage() {
                     <tr key={item.id}>
                       <td className="font-mono text-xs text-white/55">{item.id}</td>
                       <td className="font-semibold">{item.name}</td>
+                      <td className="text-white/55 text-xs">{item.country}</td>
                       <td className="text-white/60">{item.partner}</td>
-                      <td className="text-white/55">{item.major}</td>
                       <td className="text-white/55 text-xs">{item.intake}</td>
+                      <td className="text-xs">
+                        <span className={`px-2 py-0.5 rounded-lg text-[11px] font-medium ${
+                          item.dormitory === "기숙사 신청"
+                            ? "bg-blue-900/40 text-blue-300"
+                            : "bg-white/6 text-white/35"
+                        }`}>
+                          {item.dormitory}
+                        </span>
+                      </td>
                       <td>
                         <span className={statusColor[item.status] ?? "badge-yellow"}>
                           {statusLabel(item.status)}
