@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { PortalShell } from "@/components/portal-shell";
+import { AdminSemesterBar } from "@/components/admin-semester-bar";
 
 /* ── 초기 파트너 목록 ─────────────────────────────────────── */
 type Partner = {
@@ -132,6 +133,7 @@ export default function AdminPartnersPage() {
       area="admin"
       title="파트너대학 관리"
       description="파트너 대학 등록(개별·일괄), 정보 수정, 현황 확인"
+      topBar={<AdminSemesterBar />}
     >
       <div className="space-y-6">
 

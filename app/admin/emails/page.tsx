@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PortalShell } from "@/components/portal-shell";
+import { AdminSemesterBar } from "@/components/admin-semester-bar";
 
 /* ── 파트너 대학 목록 ─────────────────────────────────────────── */
 const PARTNERS = [
@@ -221,6 +222,7 @@ export default function AdminEmailsPage() {
       area="admin"
       title="이메일 발송"
       description="파트너 대학별 단계별 이메일 발송 및 성적증명서 온라인 발송"
+      topBar={<AdminSemesterBar />}
     >
       <div className="space-y-6 pb-32">
 

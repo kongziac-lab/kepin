@@ -6,6 +6,7 @@ type PortalShellProps = {
   title: string;
   description: string;
   children: ReactNode;
+  topBar?: ReactNode;
 };
 
 const navByArea = {
@@ -72,7 +73,7 @@ const areaColors: Record<string, { text: string; bg: string; border: string }> =
   }
 };
 
-export function PortalShell({ area, title, description, children }: PortalShellProps) {
+export function PortalShell({ area, title, description, children, topBar }: PortalShellProps) {
   const config = areaConfig[area];
   const color = areaColors[config.badge];
 
@@ -136,6 +137,9 @@ export function PortalShell({ area, title, description, children }: PortalShellP
           </div>
         </div>
       </div>
+
+      {/* ── Semester / context bar (admin only) ── */}
+      {topBar}
 
       {/* ── Content area ── */}
       <div className="mx-auto max-w-7xl px-6 pt-8 pb-24">

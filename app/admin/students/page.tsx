@@ -3,7 +3,9 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { PortalShell } from "@/components/portal-shell";
+import { AdminSemesterBar } from "@/components/admin-semester-bar";
 import { statusLabel, studentApplications, workflow, type WorkflowStatus } from "@/lib/mock-data";
+import { useSemester, toSemesterKey, semesterDisplayLabel } from "@/lib/semester-context";
 
 /* ── 상태 배지 색상 ───────────────────────────────────────────────── */
 const statusColor: Record<string, string> = {
@@ -66,37 +68,48 @@ const FILTER_TABS: { key: FilterKey; label: string }[] = [
 
 /* ═══════════════════════════════════════════════════════════════════ */
 export default function AdminStudentsPage() {
+  const { semester } = useSemester();
+  const semKey = toSemesterKey(semester);
+
   const [statusFilter, setStatusFilter] = useState<FilterKey>("all");
   const [nameSearch,   setNameSearch]   = useState("");
   const [partnerSearch, setPartnerSearch] = useState("");
   const [intakeSearch, setIntakeSearch]  = useState("");
 
-  /* 필터 적용 */
+  /* 학기 + 조건 필터 */
   const filtered = useMemo(() => {
     return studentApplications.filter((s) => {
+      const matchSem     = s.semesterKey === semKey;
       const matchStatus  = statusFilter === "all" || s.status === statusFilter;
       const matchName    = s.name.toLowerCase().includes(nameSearch.toLowerCase());
       const matchPartner = s.partner.toLowerCase().includes(partnerSearch.toLowerCase());
       const matchIntake  = s.intake.toLowerCase().includes(intakeSearch.toLowerCase());
-      return matchStatus && matchName && matchPartner && matchIntake;
+      return matchSem && matchStatus && matchName && matchPartner && matchIntake;
     });
-  }, [statusFilter, nameSearch, partnerSearch, intakeSearch]);
+  }, [semKey, statusFilter, nameSearch, partnerSearch, intakeSearch]);
+
+  /* 탭 카운트도 학기 기준으로 */
+  const semStudents = useMemo(
+    () => studentApplications.filter((s) => s.semesterKey === semKey),
+    [semKey]
+  );
 
   /* 현재 필터 레이블 */
   const currentLabel =
     FILTER_TABS.find((t) => t.key === statusFilter)?.label ?? "전체";
 
-  /* 탭별 카운트 */
+  /* 탭별 카운트 (학기 기준) */
   const countFor = (key: FilterKey) =>
     key === "all"
-      ? studentApplications.length
-      : studentApplications.filter((s) => s.status === key).length;
+      ? semStudents.length
+      : semStudents.filter((s) => s.status === key).length;
 
   return (
     <PortalShell
       area="admin"
       title="학생 목록 / 관리"
       description="전체 학생 목록을 필터링하고, 상세 화면으로 진입해 상태 변경과 메일 발송을 이어가는 화면입니다."
+      topBar={<AdminSemesterBar />}
     >
       <div className="space-y-5">
 

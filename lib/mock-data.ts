@@ -54,37 +54,84 @@ export const partnerUniversities = [
   { name: "University of Auckland", country: "New Zealand", nominations: 2, status: "invited" }
 ];
 
+export type ProgramType  = "exchange" | "short_term";
+export type SemesterKey  = `${number}-${"fall"|"spring"|"summer"|"winter"}`;
+
 export const studentApplications = [
+  /* ── 2026 가을학기 (교환학생) ── */
   {
-    id: "KMU-2026-0412",
-    name: "Anna Lee",
-    partner: "Thammasat University",
-    country: "Thailand",
-    status: "under_review" as WorkflowStatus,
-    major: "Business Administration",
-    intake: "2026 Fall",
-    dormitory: "기숙사 신청",
+    id: "KMU-2026-0412", name: "Anna Lee",    partner: "Thammasat University",   country: "Thailand",
+    status: "under_review" as WorkflowStatus, major: "Business Administration",
+    intake: "2026 Fall", dormitory: "기숙사 신청", semesterKey: "2026-fall" as SemesterKey, programType: "exchange" as ProgramType,
   },
   {
-    id: "KMU-2026-0413",
-    name: "Haruto Sato",
-    partner: "Ritsumeikan University",
-    country: "Japan",
-    status: "accepted" as WorkflowStatus,
-    major: "Computer Engineering",
-    intake: "2026 Fall",
-    dormitory: "미신청",
+    id: "KMU-2026-0413", name: "Haruto Sato", partner: "Ritsumeikan University", country: "Japan",
+    status: "accepted" as WorkflowStatus,     major: "Computer Engineering",
+    intake: "2026 Fall", dormitory: "미신청",     semesterKey: "2026-fall" as SemesterKey, programType: "exchange" as ProgramType,
   },
   {
-    id: "KMU-2026-0414",
-    name: "Liu Wen",
-    partner: "Fudan University",
-    country: "China",
-    status: "application_pending" as WorkflowStatus,
-    major: "Korean Language",
-    intake: "2026 Fall",
-    dormitory: "기숙사 신청",
-  }
+    id: "KMU-2026-0414", name: "Liu Wen",     partner: "Fudan University",        country: "China",
+    status: "application_pending" as WorkflowStatus, major: "Korean Language",
+    intake: "2026 Fall", dormitory: "기숙사 신청", semesterKey: "2026-fall" as SemesterKey, programType: "exchange" as ProgramType,
+  },
+  {
+    id: "KMU-2026-0415", name: "Emma Park",   partner: "University of Auckland",  country: "New Zealand",
+    status: "under_review" as WorkflowStatus, major: "Marine Science",
+    intake: "2026 Fall", dormitory: "기숙사 신청", semesterKey: "2026-fall" as SemesterKey, programType: "exchange" as ProgramType,
+  },
+  {
+    id: "KMU-2026-0416", name: "Lin Wei-Chen",partner: "Tunghai University",      country: "Taiwan",
+    status: "nomination_submitted" as WorkflowStatus, major: "Fine Arts",
+    intake: "2026 Fall", dormitory: "미신청",     semesterKey: "2026-fall" as SemesterKey, programType: "exchange" as ProgramType,
+  },
+
+  /* ── 2026 봄학기 (교환학생) ── */
+  {
+    id: "KMU-2026S-0301", name: "Mei Sakura",  partner: "Waseda University",       country: "Japan",
+    status: "enrolled" as WorkflowStatus,     major: "Japanese Literature",
+    intake: "2026 Spring", dormitory: "기숙사 신청", semesterKey: "2026-spring" as SemesterKey, programType: "exchange" as ProgramType,
+  },
+  {
+    id: "KMU-2026S-0302", name: "Park Seo-jun",partner: "Hanyang University",      country: "Korea",
+    status: "accepted" as WorkflowStatus,     major: "Economics",
+    intake: "2026 Spring", dormitory: "미신청",     semesterKey: "2026-spring" as SemesterKey, programType: "exchange" as ProgramType,
+  },
+  {
+    id: "KMU-2026S-0303", name: "Chen Fang",   partner: "Peking University",       country: "China",
+    status: "under_review" as WorkflowStatus, major: "International Relations",
+    intake: "2026 Spring", dormitory: "기숙사 신청", semesterKey: "2026-spring" as SemesterKey, programType: "exchange" as ProgramType,
+  },
+
+  /* ── 2026 여름학기 (단기수학) ── */
+  {
+    id: "KMU-2026SH-0101", name: "James Wilson",  partner: "University of Auckland", country: "New Zealand",
+    status: "application_pending" as WorkflowStatus, major: "Engineering",
+    intake: "2026 Summer", dormitory: "기숙사 신청", semesterKey: "2026-summer" as SemesterKey, programType: "short_term" as ProgramType,
+  },
+  {
+    id: "KMU-2026SH-0102", name: "Kanya Sriporn", partner: "Chiang Mai University",  country: "Thailand",
+    status: "accepted" as WorkflowStatus,     major: "Tourism Management",
+    intake: "2026 Summer", dormitory: "미신청",     semesterKey: "2026-summer" as SemesterKey, programType: "short_term" as ProgramType,
+  },
+
+  /* ── 2026 겨울학기 (단기수학) ── */
+  {
+    id: "KMU-2026W-0201", name: "Zhang Mei",   partner: "Fudan University",        country: "China",
+    status: "under_review" as WorkflowStatus, major: "Media Studies",
+    intake: "2026 Winter", dormitory: "기숙사 신청", semesterKey: "2026-winter" as SemesterKey, programType: "short_term" as ProgramType,
+  },
+
+  /* ── 2025 가을학기 (교환학생) - 이전 학기 ── */
+  {
+    id: "KMU-2025-0301", name: "Yui Nakamura", partner: "Ritsumeikan University",  country: "Japan",
+    status: "enrolled" as WorkflowStatus,     major: "Architecture",
+    intake: "2025 Fall", dormitory: "기숙사 신청", semesterKey: "2025-fall" as SemesterKey, programType: "exchange" as ProgramType,
+  },
+  {
+    id: "KMU-2025-0302", name: "Pim Wattana",  partner: "Thammasat University",    country: "Thailand",
+    status: "enrolled" as WorkflowStatus,     major: "Economics",
+    intake: "2025 Fall", dormitory: "미신청",     semesterKey: "2025-fall" as SemesterKey, programType: "exchange" as ProgramType,
+  },
 ];
 
 export const studentProfile = {
@@ -196,12 +243,15 @@ export type PartnerNomination = {
   deadline:         string;   // ISO date
   submissionStatus: PartnerSubmissionStatus;
   students:         NominationStudent[];
+  semesterKey:      string;   // e.g. "2026-fall"
+  programType:      ProgramType;
 };
 
 export const partnerNominations: PartnerNomination[] = [
   {
     partnerId: 1, university: "Thammasat University", country: "Thailand", flag: "🇹🇭",
     contact: "Siriporn K.", email: "intl@tu.ac.th", quota: 10, deadline: "2026-04-30",
+    semesterKey: "2026-fall", programType: "exchange",
     submissionStatus: "submitted",
     students: [
       { id: "KMU-2026-0412", nameEn: "Anna Lee",      major: "Business Administration", nominationStatus: "confirmed", submittedAt: "2026-03-10T09:00:00Z", appStatus: "under_review",        hasNameMismatch: true  },
@@ -213,6 +263,7 @@ export const partnerNominations: PartnerNomination[] = [
   {
     partnerId: 2, university: "Fudan University", country: "China", flag: "🇨🇳",
     contact: "Li Wei", email: "exchange@fudan.edu.cn", quota: 8, deadline: "2026-04-30",
+    semesterKey: "2026-fall", programType: "exchange",
     submissionStatus: "submitted",
     students: [
       { id: "KMU-2026-0414", nameEn: "Liu Wen",   major: "Korean Language",  nominationStatus: "confirmed", submittedAt: "2026-03-12T10:00:00Z", appStatus: "application_pending", hasNameMismatch: true  },
@@ -223,6 +274,7 @@ export const partnerNominations: PartnerNomination[] = [
   {
     partnerId: 3, university: "Ritsumeikan University", country: "Japan", flag: "🇯🇵",
     contact: "Yuki Tanaka", email: "oia@ritsumei.ac.jp", quota: 6, deadline: "2026-04-30",
+    semesterKey: "2026-fall", programType: "exchange",
     submissionStatus: "submitted",
     students: [
       { id: "KMU-2026-0413", nameEn: "Haruto Sato",  major: "Computer Engineering", nominationStatus: "confirmed", submittedAt: "2026-03-08T08:00:00Z", appStatus: "accepted",            hasNameMismatch: true  },
@@ -232,6 +284,7 @@ export const partnerNominations: PartnerNomination[] = [
   {
     partnerId: 4, university: "University of Auckland", country: "New Zealand", flag: "🇳🇿",
     contact: "Emma Brown", email: "exchange@auckland.ac.nz", quota: 4, deadline: "2026-04-30",
+    semesterKey: "2026-fall", programType: "exchange",
     submissionStatus: "submitted",
     students: [
       { id: "KMU-2026-0421", nameEn: "Emma Park",   major: "Marine Science", nominationStatus: "confirmed", submittedAt: "2026-03-14T11:00:00Z", appStatus: "application_pending", hasNameMismatch: false },
@@ -241,6 +294,7 @@ export const partnerNominations: PartnerNomination[] = [
   {
     partnerId: 7, university: "Tunghai University", country: "Taiwan", flag: "🇹🇼",
     contact: "Pei Lin", email: "pei.lin@thu.edu.tw", quota: 6, deadline: "2026-04-30",
+    semesterKey: "2026-fall", programType: "exchange",
     submissionStatus: "partial",
     students: [
       { id: "KMU-2026-0423", nameEn: "Lin Wei-Chen", major: "Fine Arts",  nominationStatus: "confirmed", submittedAt: "2026-03-16T09:00:00Z", appStatus: "nomination_submitted", hasNameMismatch: false },
@@ -249,6 +303,7 @@ export const partnerNominations: PartnerNomination[] = [
   {
     partnerId: 8, university: "Chiang Mai University", country: "Thailand", flag: "🇹🇭",
     contact: "Nong P.", email: "intl@cmu.ac.th", quota: 8, deadline: "2026-04-30",
+    semesterKey: "2026-fall", programType: "exchange",
     submissionStatus: "submitted",
     students: [
       { id: "KMU-2026-0424", nameEn: "Kanya Sriporn",  major: "Tourism Management", nominationStatus: "confirmed", submittedAt: "2026-03-11T07:00:00Z", appStatus: "under_review",        hasNameMismatch: false },
@@ -258,38 +313,78 @@ export const partnerNominations: PartnerNomination[] = [
   {
     partnerId: 9, university: "Peking University", country: "China", flag: "🇨🇳",
     contact: "Zhang Min", email: "oia@pku.edu.cn", quota: 5, deadline: "2026-04-30",
-    submissionStatus: "not_submitted",
-    students: [],
+    semesterKey: "2026-fall", programType: "exchange",
+    submissionStatus: "not_submitted", students: [],
   },
   {
     partnerId: 10, university: "Waseda University", country: "Japan", flag: "🇯🇵",
     contact: "Kenji Ito", email: "exchange@waseda.jp", quota: 8, deadline: "2026-04-30",
-    submissionStatus: "not_submitted",
-    students: [],
+    semesterKey: "2026-fall", programType: "exchange",
+    submissionStatus: "not_submitted", students: [],
   },
   {
     partnerId: 11, university: "National Taiwan University", country: "Taiwan", flag: "🇹🇼",
     contact: "Chen Yu", email: "oia@ntu.edu.tw", quota: 4, deadline: "2026-04-30",
-    submissionStatus: "not_submitted",
-    students: [],
+    semesterKey: "2026-fall", programType: "exchange",
+    submissionStatus: "not_submitted", students: [],
   },
   {
     partnerId: 5, university: "Mahidol University", country: "Thailand", flag: "🇹🇭",
     contact: "Pim Chan", email: "pim@mahidol.ac.th", quota: 4, deadline: "2026-04-30",
-    submissionStatus: "not_submitted",
-    students: [],
+    semesterKey: "2026-fall", programType: "exchange",
+    submissionStatus: "not_submitted", students: [],
   },
   {
     partnerId: 6, university: "Kansai University", country: "Japan", flag: "🇯🇵",
     contact: "Yuta Mori", email: "y.mori@kansai.ac.jp", quota: 4, deadline: "2026-04-30",
-    submissionStatus: "not_submitted",
-    students: [],
+    semesterKey: "2026-fall", programType: "exchange",
+    submissionStatus: "not_submitted", students: [],
   },
   {
     partnerId: 12, university: "Hanyang University", country: "Korea", flag: "🇰🇷",
     contact: "Park Ji-su", email: "global@hanyang.ac.kr", quota: 4, deadline: "2026-04-30",
-    submissionStatus: "not_submitted",
-    students: [],
+    semesterKey: "2026-fall", programType: "exchange",
+    submissionStatus: "not_submitted", students: [],
+  },
+  /* ── 2026 봄학기 (교환학생) 노미네이션 ── */
+  {
+    partnerId: 10, university: "Waseda University", country: "Japan", flag: "🇯🇵",
+    contact: "Kenji Ito", email: "exchange@waseda.jp", quota: 6, deadline: "2025-10-31",
+    semesterKey: "2026-spring", programType: "exchange",
+    submissionStatus: "submitted",
+    students: [
+      { id: "KMU-2026S-0301", nameEn: "Mei Sakura",  major: "Japanese Literature", nominationStatus: "confirmed", submittedAt: "2025-10-01T09:00:00Z", appStatus: "enrolled",        hasNameMismatch: false },
+      { id: "KMU-2026S-0302", nameEn: "Tanaka Ryu",  major: "Economics",           nominationStatus: "confirmed", submittedAt: "2025-10-01T09:05:00Z", appStatus: "accepted",        hasNameMismatch: false },
+    ],
+  },
+  {
+    partnerId: 12, university: "Hanyang University", country: "Korea", flag: "🇰🇷",
+    contact: "Park Ji-su", email: "global@hanyang.ac.kr", quota: 4, deadline: "2025-10-31",
+    semesterKey: "2026-spring", programType: "exchange",
+    submissionStatus: "partial",
+    students: [
+      { id: "KMU-2026S-0302", nameEn: "Park Seo-jun", major: "Economics", nominationStatus: "confirmed", submittedAt: "2025-10-03T10:00:00Z", appStatus: "accepted", hasNameMismatch: false },
+    ],
+  },
+  /* ── 2026 여름학기 (단기수학) 노미네이션 ── */
+  {
+    partnerId: 4, university: "University of Auckland", country: "New Zealand", flag: "🇳🇿",
+    contact: "Emma Brown", email: "exchange@auckland.ac.nz", quota: 5, deadline: "2026-05-15",
+    semesterKey: "2026-summer", programType: "short_term",
+    submissionStatus: "submitted",
+    students: [
+      { id: "KMU-2026SH-0101", nameEn: "James Wilson",  major: "Engineering",        nominationStatus: "confirmed", submittedAt: "2026-04-01T09:00:00Z", appStatus: "application_pending", hasNameMismatch: false },
+      { id: "KMU-2026SH-0103", nameEn: "Sophie Martin", major: "Business Analytics", nominationStatus: "pending",   submittedAt: "2026-04-05T14:00:00Z", appStatus: undefined,             hasNameMismatch: false },
+    ],
+  },
+  {
+    partnerId: 8, university: "Chiang Mai University", country: "Thailand", flag: "🇹🇭",
+    contact: "Nong P.", email: "intl@cmu.ac.th", quota: 4, deadline: "2026-05-15",
+    semesterKey: "2026-summer", programType: "short_term",
+    submissionStatus: "submitted",
+    students: [
+      { id: "KMU-2026SH-0102", nameEn: "Kanya Sriporn", major: "Tourism Management", nominationStatus: "confirmed", submittedAt: "2026-04-02T08:00:00Z", appStatus: "accepted", hasNameMismatch: false },
+    ],
   },
 ];
 

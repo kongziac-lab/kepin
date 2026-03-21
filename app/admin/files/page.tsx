@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { PortalShell } from '@/components/portal-shell';
+import { AdminSemesterBar } from '@/components/admin-semester-bar';
 
 /* ── Mock student file data ─────────────────────────────────────────────── */
 const STUDENTS = [
@@ -185,6 +186,7 @@ export default function AdminFilesPage() {
       area="admin"
       title="파일 관리"
       description="학생별 제출 서류를 확인하고 ZIP으로 일괄 다운로드합니다."
+      topBar={<AdminSemesterBar />}
     >
       <div className="space-y-5">
 

@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { PortalShell } from "@/components/portal-shell";
+import { AdminSemesterBar } from "@/components/admin-semester-bar";
 import {
   partnerNominations,
-  nominationSummary,
   statusLabel,
   type PartnerNomination,
   type NominationStudentStatus,
   type PartnerSubmissionStatus,
 } from "@/lib/mock-data";
+import { useSemester, toSemesterKey, semesterDisplayLabel } from "@/lib/semester-context";
 
 /* ── 유틸 ──────────────────────────────────────────────────────────── */
 function daysUntil(iso: string) {
@@ -178,17 +179,26 @@ function PartnerRow({ p }: { p: PartnerNomination }) {
 
 /* ══════════════════════════════════════════════════════════════════════ */
 export default function AdminNominationsPage() {
+  const { semester } = useSemester();
+  const semKey = toSemesterKey(semester);
+
   const [filter, setFilter] = useState<PartnerSubmissionStatus | "all" | "mismatch">("all");
   const [search, setSearch] = useState("");
 
-  const days = daysUntil(nominationSummary.deadline);
+  /* 학기 기준 필터링 */
+  const semNominations = useMemo(
+    () => partnerNominations.filter((p) => p.semesterKey === semKey),
+    [semKey]
+  );
 
-  /* 이름 불일치 건수 */
-  const mismatchCount = partnerNominations.reduce(
+  const deadline = semNominations[0]?.deadline ?? "2099-12-31";
+  const days = daysUntil(deadline);
+
+  const mismatchCount = semNominations.reduce(
     (acc, p) => acc + p.students.filter((s) => s.hasNameMismatch).length, 0
   );
 
-  const filtered = partnerNominations.filter((p) => {
+  const filtered = semNominations.filter((p) => {
     const matchFilter =
       filter === "all"      ? true :
       filter === "mismatch" ? p.students.some((s) => s.hasNameMismatch) :
@@ -198,30 +208,34 @@ export default function AdminNominationsPage() {
     return matchFilter && matchSearch;
   });
 
-  /* ── 요약 통계 ── */
+  /* ── 요약 통계 (학기 기준) ── */
+  const totalNoms     = semNominations.reduce((a, p) => a + p.students.length, 0);
+  const confirmedNoms = semNominations.reduce((a, p) => a + p.students.filter((s) => s.nominationStatus === "confirmed").length, 0);
+  const pendingNoms   = semNominations.reduce((a, p) => a + p.students.filter((s) => s.nominationStatus === "pending").length, 0);
+
   const stats = [
     {
       label: "제출 대학",
-      value: `${partnerNominations.filter((p) => p.submissionStatus === "submitted" || p.submissionStatus === "partial").length}`,
-      sub:   `전체 ${nominationSummary.totalPartners}개 중`,
+      value: `${semNominations.filter((p) => p.submissionStatus === "submitted" || p.submissionStatus === "partial").length}`,
+      sub:   `전체 ${semNominations.length}개 중`,
       color: "text-green-400",
     },
     {
       label: "미제출 대학",
-      value: `${partnerNominations.filter((p) => p.submissionStatus === "not_submitted").length}`,
+      value: `${semNominations.filter((p) => p.submissionStatus === "not_submitted").length}`,
       sub:   "리마인드 필요",
       color: "text-amber-400",
     },
     {
       label: "노미네이션 총계",
-      value: `${nominationSummary.totalNominations}`,
-      sub:   `확정 ${nominationSummary.confirmedCount} · 검토 중 ${nominationSummary.pendingCount}`,
+      value: `${totalNoms}`,
+      sub:   `확정 ${confirmedNoms} · 검토 중 ${pendingNoms}`,
       color: "text-white",
     },
     {
       label: "마감까지",
       value: days > 0 ? `D-${days}` : "마감",
-      sub:   nominationSummary.deadline,
+      sub:   deadline,
       color: days <= 7 ? "text-red-400" : days <= 14 ? "text-amber-400" : "text-white/70",
     },
   ];
@@ -231,6 +245,7 @@ export default function AdminNominationsPage() {
       area="admin"
       title="노미네이션 관리"
       description="파트너 대학별 노미네이션 제출 현황을 실시간으로 확인하고 관리합니다."
+      topBar={<AdminSemesterBar />}
     >
       <div className="space-y-5">
 
@@ -250,13 +265,13 @@ export default function AdminNominationsPage() {
           <div className="flex items-center justify-between text-xs text-white/40">
             <span>파트너 제출률</span>
             <span className="font-semibold text-white/60">
-              {partnerNominations.filter(p => p.submissionStatus !== "not_submitted").length} / {nominationSummary.totalPartners}개 대학
+              {semNominations.filter(p => p.submissionStatus !== "not_submitted").length} / {semNominations.length}개 대학
             </span>
           </div>
           <div className="h-2 rounded-full bg-white/8 overflow-hidden flex gap-0.5">
-            {partnerNominations.map((p) => (
+            {semNominations.map((p) => (
               <div
-                key={p.partnerId}
+                key={`${p.partnerId}-${p.semesterKey}`}
                 title={p.university}
                 className={`flex-1 h-full transition-all ${
                   p.submissionStatus === "submitted"     ? "bg-green-500" :

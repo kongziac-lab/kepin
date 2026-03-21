@@ -1,4 +1,7 @@
+"use client";
+
 import { PortalShell } from "@/components/portal-shell";
+import { AdminSemesterBar } from "@/components/admin-semester-bar";
 import { orientationAssets } from "@/lib/mock-data";
 
 export default function AdminOrientationPage() {
@@ -7,6 +10,7 @@ export default function AdminOrientationPage() {
       area="admin"
       title="오리엔테이션 관리"
       description="자료 업로드, 공유 파일 목록, 학생 공지 발송을 위한 운영 화면입니다."
+      topBar={<AdminSemesterBar />}
     >
       <section className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
         <div className="panel-strong rounded-[2rem] p-6">
