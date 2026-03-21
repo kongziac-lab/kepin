@@ -54,7 +54,7 @@ function parseExcelText(text: string): Omit<Partner, "id" | "nominations" | "reg
 
 export default function AdminPartnersPage() {
   const [partners, setPartners]     = useState<Partner[]>(INIT_PARTNERS);
-  const [tab, setTab]               = useState<"individual" | "excel">("individual");
+  const [tab, setTab]               = useState<"individual" | "excel">("excel");
   const [form, setForm]             = useState({ ...EMPTY_FORM });
   const [editId, setEditId]         = useState<number | null>(null);
   const [editForm, setEditForm]     = useState<Partner | null>(null);
@@ -139,7 +139,7 @@ export default function AdminPartnersPage() {
         <div className="panel rounded-2xl overflow-hidden">
           {/* 탭 */}
           <div className="flex border-b border-white/8">
-            {[["individual", "개별 등록"], ["excel", "엑셀 일괄 등록"]] .map(([key, label]) => (
+            {[["excel", "엑셀 일괄 등록"], ["individual", "개별 등록"]].map(([key, label]) => (
               <button
                 key={key}
                 onClick={() => setTab(key as "individual" | "excel")}
