@@ -1,0 +1,158 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+
+type PortalShellProps = {
+  area: "student" | "partner" | "admin";
+  title: string;
+  description: string;
+  children: ReactNode;
+};
+
+const navByArea = {
+  student: [
+    { href: "/student/dashboard",   label: "대시보드",      icon: "⊞"  },
+    { href: "/student/passport",    label: "여권 등록",      icon: "🛂" },
+    { href: "/student/apply",       label: "온라인 신청서",  icon: "✏️" },
+    { href: "/student/status",      label: "신청 현황",      icon: "📋" },
+    { href: "/student/acceptance",  label: "입학통지서",     icon: "🎓" },
+    { href: "/student/inquiry",     label: "질문하기",       icon: "💬" }
+  ],
+  partner: [
+    { href: "/partner/dashboard",    label: "대시보드",        icon: "⊞"  },
+    { href: "/partner/nominate",     label: "노미네이션 제출", icon: "✏️" },
+    { href: "/partner/nominations",  label: "노미네이션 현황", icon: "📋" }
+  ],
+  admin: [
+    { href: "/admin/dashboard",      label: "대시보드",    icon: "⊞"  },
+    { href: "/admin/partners",       label: "파트너 관리", icon: "🏛️" },
+    { href: "/admin/students",       label: "학생 관리",   icon: "👥" },
+    { href: "/admin/files",          label: "파일 관리",   icon: "🗂️" },
+    { href: "/admin/emails",         label: "이메일 관리", icon: "✉️" },
+    { href: "/admin/orientation",    label: "오리엔테이션", icon: "📁" }
+  ]
+} as const;
+
+const areaConfig = {
+  student: {
+    label: "Student Portal",
+    badge: "badge-area-blue",
+    accent: "rgba(96, 165, 250, 0.18)",
+    accentBorder: "rgba(96, 165, 250, 0.28)"
+  },
+  partner: {
+    label: "Partner Portal",
+    badge: "badge-area-green",
+    accent: "rgba(52, 211, 153, 0.14)",
+    accentBorder: "rgba(52, 211, 153, 0.24)"
+  },
+  admin: {
+    label: "KMU Admin",
+    badge: "badge-area-red",
+    accent: "rgba(185, 28, 28, 0.14)",
+    accentBorder: "rgba(185, 28, 28, 0.25)"
+  }
+};
+
+const areaColors: Record<string, { text: string; bg: string; border: string }> = {
+  "badge-area-blue": {
+    text: "#93c5fd",
+    bg: "rgba(59, 130, 246, 0.12)",
+    border: "rgba(96, 165, 250, 0.25)"
+  },
+  "badge-area-green": {
+    text: "#6ee7b7",
+    bg: "rgba(52, 211, 153, 0.1)",
+    border: "rgba(52, 211, 153, 0.22)"
+  },
+  "badge-area-red": {
+    text: "#fca5a5",
+    bg: "rgba(185, 28, 28, 0.12)",
+    border: "rgba(248, 113, 113, 0.24)"
+  }
+};
+
+export function PortalShell({ area, title, description, children }: PortalShellProps) {
+  const config = areaConfig[area];
+  const color = areaColors[config.badge];
+
+  return (
+    <div className="page-shell min-h-screen">
+      {/* ── Portal header ── */}
+      <header
+        className="sticky top-0 z-40 backdrop-blur-xl"
+        style={{
+          background: "rgba(12, 10, 10, 0.88)",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.06)"
+        }}
+      >
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-xl text-sm font-black text-white"
+              style={{ background: "linear-gradient(135deg, #b91c1c, #f97360)" }}
+            >
+              K
+            </div>
+            <div>
+              <div className="text-sm font-bold tracking-tight">Kepin</div>
+              <div className="text-[9px] text-white/30">Keimyung Inbound Exchange</div>
+            </div>
+          </Link>
+
+          {/* Area badge */}
+          <span
+            className="rounded-full border px-3 py-1 text-xs font-semibold"
+            style={{ color: color.text, background: color.bg, borderColor: color.border }}
+          >
+            {config.label}
+          </span>
+
+          <Link href="/" className="button-secondary text-xs px-3.5 py-2">
+            ← 랜딩
+          </Link>
+        </div>
+      </header>
+
+      {/* ── Content area ── */}
+      <div className="mx-auto max-w-7xl px-6 py-10">
+        {/* Page heading */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-black tracking-tight">{title}</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-white/44">{description}</p>
+        </div>
+
+        {/* Sidebar + main grid */}
+        <div className="grid gap-6 lg:grid-cols-[212px_minmax(0,1fr)]">
+          {/* Sidebar */}
+          <aside
+            className="h-fit rounded-3xl p-3"
+            style={{
+              background: "rgba(255,255,255,0.035)",
+              border: "1px solid rgba(255,255,255,0.07)",
+              backdropFilter: "blur(12px)"
+            }}
+          >
+            <div className="mb-1.5 px-3 pt-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-white/22">
+              Navigation
+            </div>
+            <div className="space-y-0.5">
+              {navByArea[area].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center gap-2.5 rounded-2xl px-3 py-2.5 text-sm text-white/52 transition-all duration-200 hover:bg-white/6 hover:text-white"
+                >
+                  <span className="text-sm flex-shrink-0 w-5 text-center">{item.icon}</span>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </aside>
+
+          {/* Main content */}
+          <main className="min-w-0 space-y-6">{children}</main>
+        </div>
+      </div>
+    </div>
+  );
+}

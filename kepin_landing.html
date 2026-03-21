@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kepin — Keimyung University Inbound Exchange Application Platform</title>
+  <meta name="description" content="Apply for Keimyung University's Inbound Exchange Program. From nomination to acceptance letter, all in one place.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css">
+  <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Pretendard', 'system-ui', 'sans-serif'] },
+          colors: {
+            cr: { 50:'#FEF2F2',100:'#FEE2E2',300:'#FCA5A5',400:'#F87171',500:'#EF4444',600:'#DC2626',700:'#B91C1C',800:'#991B1B',900:'#7F1D1D',950:'#450A0A' },
+            gold: { 400:'#FBBF24', 500:'#F59E0B', 600:'#D97706' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{font-family:'Pretendard',system-ui,sans-serif;background:#0c0a0a;color:#f5f0ef;overflow-x:hidden}
+    .keep-all{word-break:keep-all}
+
+    /* noise */
+    body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:60;opacity:.5}
+
+    .mesh-bg{background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(185,28,28,.2) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 80%,rgba(245,158,11,.08) 0%,transparent 50%),radial-gradient(ellipse 100% 80% at 50% 50%,#0c0a0a 0%,#0c0a0a 100%)}
+
+    .glass{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 40px rgba(0,0,0,.4);backdrop-filter:blur(12px)}
+    .glass-r{background:rgba(185,28,28,.07);border:1px solid rgba(185,28,28,.18);box-shadow:inset 0 1px 0 rgba(255,100,80,.08),0 20px 40px rgba(0,0,0,.3)}
+
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(2rem)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+    @keyframes scroll-x{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    @keyframes chatIn{from{opacity:0;transform:translateY(1rem) scale(.97)}to{opacity:1;transform:none}}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+    @keyframes ripple{0%{transform:scale(1);opacity:.6}100%{transform:scale(2);opacity:0}}
+
+    .anim-up{animation:fadeInUp .7s cubic-bezier(.16,1,.3,1) both}
+    .anim-in{animation:fadeIn .6s ease both}
+    .d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.35s}.d4{animation-delay:.5s}
+
+    .shimmer-text{background:linear-gradient(90deg,#f5f0ef 0%,#DC2626 30%,#F59E0B 50%,#DC2626 70%,#f5f0ef 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite}
+
+    .float{animation:float 4s ease-in-out infinite}
+    .float-s{animation:float 6s ease-in-out infinite}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:40;transition:all .3s ease}
+    nav.scrolled{background:rgba(12,10,10,.88);border-bottom:1px solid rgba(185,28,28,.2);backdrop-filter:blur(20px)}
+
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.875rem 2rem;border-radius:.75rem;font-weight:700;font-size:1rem;transition:all .4s cubic-bezier(.16,1,.3,1);cursor:pointer;text-decoration:none}
+    .btn-r{background:linear-gradient(135deg,#B91C1C,#DC2626);color:#fff;border:1px solid rgba(255,100,80,.3);box-shadow:0 0 0 0 rgba(185,28,28,.4),0 8px 24px rgba(185,28,28,.3)}
+    .btn-r:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 0 0 4px rgba(185,28,28,.15),0 16px 32px rgba(185,28,28,.4)}
+    .btn-r:active{transform:scale(.98)}
+    .btn-g{background:rgba(255,255,255,.06);color:#f5f0ef;border:1px solid rgba(255,255,255,.12)}
+    .btn-g:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
+
+    .reveal{opacity:0;transform:translateY(1.5rem);transition:opacity .7s ease,transform .7s cubic-bezier(.16,1,.3,1)}
+    .reveal.visible{opacity:1;transform:none}
+
+    .marquee{display:flex;gap:3rem;animation:scroll-x 35s linear infinite;white-space:nowrap}
+    .marquee:hover{animation-play-state:paused}
+
+    /* Map */
+    #partner-map{border-radius:1rem;overflow:hidden}
+    .leaflet-container{background:#1a1010 !important}
+    .leaflet-tile{filter:invert(1) hue-rotate(185deg) saturate(0.4) brightness(0.55) contrast(1.1)}
+    .map-popup .leaflet-popup-content-wrapper{background:#1e0d0d;border:1px solid rgba(185,28,28,.35);color:#f5f0ef;font-family:'Pretendard',sans-serif;font-size:.8rem;box-shadow:0 8px 24px rgba(0,0,0,.5);border-radius:.75rem}
+    .map-popup .leaflet-popup-tip{background:#1e0d0d}
+    .map-popup .leaflet-popup-close-button{color:#f87171}
+
+    /* Login modal */
+    .modal{display:none;position:fixed;inset:0;z-index:80;align-items:center;justify-content:center;padding:1rem}
+    .modal.open{display:flex}
+    .modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px)}
+    .modal-box{position:relative;z-index:1;width:100%;max-width:28rem;animation:chatIn .35s cubic-bezier(.16,1,.3,1) both}
+
+    /* Chatbot */
+    #chat-btn{position:fixed;bottom:2rem;right:2rem;z-index:70;width:3.5rem;height:3.5rem;border-radius:9999px;background:linear-gradient(135deg,#B91C1C,#DC2626);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(185,28,28,.5);transition:all .3s ease}
+    #chat-btn:hover{transform:scale(1.1)}
+    #chat-btn .ripple{position:absolute;inset:0;border-radius:9999px;background:rgba(185,28,28,.4);animation:ripple 2s ease-out infinite}
+    #chat-window{position:fixed;bottom:6.5rem;right:2rem;z-index:70;width:22rem;max-height:34rem;display:flex;flex-direction:column;border-radius:1.25rem;overflow:hidden;transform-origin:bottom right;transition:all .35s cubic-bezier(.16,1,.3,1);opacity:0;transform:scale(.9) translateY(1rem);pointer-events:none}
+    #chat-window.open{opacity:1;transform:scale(1) translateY(0);pointer-events:all}
+    .chat-msg{max-width:85%;padding:.65rem .9rem;border-radius:1rem;font-size:.85rem;line-height:1.5;animation:chatIn .3s ease both}
+    .chat-msg.user{background:linear-gradient(135deg,#B91C1C,#DC2626);color:#fff;border-bottom-right-radius:.25rem;margin-left:auto}
+    .chat-msg.bot{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#f5f0ef;border-bottom-left-radius:.25rem}
+    .typing span{display:inline-block;width:6px;height:6px;background:#9CA3AF;border-radius:9999px;animation:blink 1.2s ease infinite}
+    .typing span:nth-child(2){animation-delay:.2s}
+    .typing span:nth-child(3){animation-delay:.4s}
+    #chat-input{background:transparent;border:none;outline:none;flex:1;color:#f5f0ef;font-family:'Pretendard',sans-serif;font-size:.875rem}
+    #chat-input::placeholder{color:rgba(245,240,239,.35)}
+
+    /* Page routing */
+    .page{display:none}
+    .page.active{display:block}
+
+    /* Form inputs */
+    .form-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:.625rem;padding:.75rem 1rem;color:#f5f0ef;font-family:'Pretendard',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s}
+    .form-input:focus{border-color:rgba(185,28,28,.6);background:rgba(185,28,28,.05)}
+    .form-input::placeholder{color:rgba(245,240,239,.3)}
+    select.form-input option{background:#1a0808;color:#f5f0ef}
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ NAV ══════════════ -->
+<nav id="nav">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-4">
+    <a href="#" onclick="showPage('home')" class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cr-700 to-cr-500 flex items-center justify-center">
+        <iconify-icon icon="solar:graduation-cap-bold" style="color:#fff;font-size:1rem;"></iconify-icon>
+      </div>
+      <span class="font-bold text-lg tracking-tight">Kepin</span>
+    </a>
+    <div class="hidden md:flex items-center gap-7 text-sm text-white/60">
+      <a href="#about" class="hover:text-white transition-colors">About</a>
+      <a href="#process" class="hover:text-white transition-colors">How to Apply</a>
+      <a href="#map-section" class="hover:text-white transition-colors">Partner Map</a>
+      <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+      <a href="https://www.kmu.ac.kr/inter/index.do" target="_blank" class="hover:text-white transition-colors flex items-center gap-1">
+        KMU International <iconify-icon icon="solar:arrow-right-up-linear"></iconify-icon>
+      </a>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="openLogin('student')" class="btn btn-g text-sm px-4 py-2">Student Login</button>
+      <button onclick="openLogin('partner')" class="btn btn-g text-sm px-4 py-2 hidden md:inline-flex">Partner Login</button>
+      <button onclick="openLogin('admin')" class="btn btn-r text-sm px-4 py-2">Admin</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════ HOME PAGE ══════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="mesh-bg min-h-[100dvh] flex items-center pt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-20">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
+        <div class="lg:col-span-3">
+          <div class="inline-flex items-center gap-2 glass-r rounded-full px-4 py-1.5 text-sm text-cr-300 mb-6 anim-up">
+            <span class="w-1.5 h-1.5 rounded-full bg-cr-500 inline-block" style="animation:ripple 1.5s ease-out infinite;display:inline-block"></span>
+            2026 Spring/Fall Intake — Now Open
+          </div>
+          <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-none mb-4 anim-up d1">
+            Study at<br>
+            <span class="shimmer-text">Keimyung</span><br>
+            University
+          </h1>
+          <p class="text-white/55 text-lg leading-relaxed max-w-xl anim-up d2 mb-8">
+            Experience world-class education in Daegu, South Korea.<br>
+            One platform covers everything — from nomination to enrollment.
+          </p>
+          <div class="flex flex-wrap items-center gap-4 anim-up d3">
+            <button onclick="openLogin('student')" class="btn btn-r">
+              Apply Now <iconify-icon icon="solar:arrow-right-bold"></iconify-icon>
+            </button>
+            <a href="#about" class="btn btn-g">
+              <iconify-icon icon="solar:info-circle-linear"></iconify-icon> Learn More
+            </a>
+          </div>
+          <div class="flex items-center gap-6 mt-10 anim-up d4">
+            <div class="text-center">
+              <div class="text-2xl font-bold text-cr-400">83</div>
+              <div class="text-xs text-white/40 mt-0.5">Countries</div>
+            </div>
+            <div class="w-px h-10 bg-white/10"></div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-gold-400">247+</div>
+              <div class="text-xs text-white/40 mt-0.5">Partner Universities</div>
+            </div>
+            <div class="w-px h-10 bg-white/10"></div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-white">Since 1968</div>
+              <div class="text-xs text-white/40 mt-0.5">Est.</div>
+            </div>
+          </div>
+        </div>
+        <!-- Hero Visual: Interactive Canvas Card -->
+        <div class="lg:col-span-2 relative flex justify-center items-center anim-in d2">
+          <div class="relative" style="width:320px;height:360px;">
+
+            <!-- Main canvas card -->
+            <div class="glass rounded-2xl overflow-hidden" style="width:100%;height:100%;position:relative;border:1px solid rgba(185,28,28,.22);">
+              <!-- Canvas layer: aurora + particles + grid -->
+              <canvas id="hero-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+
+              <!-- Cursor glow follower -->
+              <div id="cursor-glow" style="position:absolute;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(220,38,38,.28) 0%,transparent 70%);pointer-events:none;transform:translate(-50%,-50%);transition:left .12s ease,top .12s ease;left:50%;top:50%;"></div>
+
+              <!-- KMU label overlay at bottom -->
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:1.1rem 1.25rem;background:linear-gradient(to top,rgba(12,5,5,.92) 0%,rgba(12,5,5,.5) 60%,transparent 100%);z-index:2;">
+                <div style="font-size:.65rem;font-weight:700;letter-spacing:.12em;color:#F87171;margin-bottom:.2rem;text-transform:uppercase;">Keimyung University</div>
+                <div style="font-weight:700;font-size:.95rem;color:#f5f0ef;">Daegu · Seongseo Campus</div>
+                <div style="font-size:.7rem;color:rgba(245,240,239,.4);margin-top:.15rem;">1095 Dalgubeol-daero, Dalseo-gu</div>
+              </div>
+
+              <!-- Top-right stats -->
+              <div style="position:absolute;top:.85rem;right:.85rem;display:flex;flex-direction:column;gap:.4rem;z-index:2;">
+                <div style="background:rgba(12,5,5,.6);border:1px solid rgba(185,28,28,.25);border-radius:.5rem;padding:.3rem .6rem;font-size:.62rem;color:rgba(245,240,239,.6);backdrop-filter:blur(8px);text-align:right;">
+                  <span style="color:#F87171;font-weight:700;font-size:.75rem;">247+</span> Partners
+                </div>
+                <div style="background:rgba(12,5,5,.6);border:1px solid rgba(255,255,255,.08);border-radius:.5rem;padding:.3rem .6rem;font-size:.62rem;color:rgba(245,240,239,.6);backdrop-filter:blur(8px);text-align:right;">
+                  <span style="color:#34d399;font-weight:700;font-size:.75rem;">83</span> Countries
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating badge: Accepted -->
+            <div class="absolute glass-r rounded-xl p-3 float" style="bottom:-1.4rem;right:-1.4rem;animation-delay:.8s;z-index:10;min-width:160px;">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-cr-700/50 flex items-center justify-center shrink-0">
+                  <iconify-icon icon="solar:check-circle-bold" style="color:#F87171;"></iconify-icon>
+                </div>
+                <div>
+                  <div class="text-xs font-bold">Application Accepted</div>
+                  <div class="text-xs text-white/40">Acceptance letter ready</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating badge: Languages -->
+            <div class="absolute glass rounded-lg px-3 py-2 float" style="top:-1rem;left:-1rem;animation-delay:2s;z-index:10;">
+              <div class="flex items-center gap-1.5 text-xs">
+                <iconify-icon icon="solar:global-linear" style="color:#F87171;"></iconify-icon>
+                <span class="text-white/70">Korean · English · 中文</span>
+              </div>
+            </div>
+
+            <!-- Floating badge: AI -->
+            <div class="absolute glass rounded-lg px-3 py-2 float" style="top:5.5rem;left:-1.6rem;animation-delay:3.2s;z-index:10;">
+              <div class="flex items-center gap-1.5 text-xs">
+                <iconify-icon icon="solar:cpu-bolt-bold" style="color:#A78BFA;font-size:.9rem;"></iconify-icon>
+                <span class="text-white/60">AI Passport Auto-fill</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <section class="py-10 border-y border-white/5 overflow-hidden">
+    <p class="text-center text-white/25 text-xs tracking-widest uppercase mb-4">Partner Universities (sample)</p>
+    <div class="overflow-hidden">
+      <div class="marquee">
+        <span class="text-white/30 text-sm">Thammasat University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Mahidol University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Chiang Mai University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Fudan University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Kansai University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Ritsumeikan University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Universiti Malaya</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">University of Auckland</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Hanoi University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Tunghai University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Thammasat University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Mahidol University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Chiang Mai University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Fudan University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Kansai University</span><span class="text-cr-900/60 mx-4">·</span>
+        <span class="text-white/30 text-sm">Ritsumeikan University</span><span class="text-cr-900/60 mx-4">·</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div class="reveal">
+          <div class="text-cr-500 text-sm font-semibold tracking-widest uppercase mb-4">About the Program</div>
+          <h2 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6">What is the<br>Inbound Exchange Program?</h2>
+          <p class="text-white/55 text-base leading-relaxed mb-5">
+            Keimyung University maintains exchange agreements with 247+ partner institutions worldwide. Students nominated by their home university can study at KMU for one semester or one academic year, earning credits transferable back to their home institution.
+          </p>
+          <p class="text-white/35 text-sm leading-relaxed mb-8">
+            A wide range of courses are available in English and Korean across 10 colleges including Humanities, Social Sciences, Engineering, Arts, and Medicine. Structured dormitory support and a comprehensive orientation program ensure a smooth transition.
+          </p>
+          <a href="https://www.kmu.ac.kr/inter/index.do" target="_blank" class="btn btn-g">
+            KMU International Office <iconify-icon icon="solar:arrow-right-up-linear"></iconify-icon>
+          </a>
+        </div>
+        <div class="grid grid-cols-2 gap-4 reveal" style="transition-delay:.15s">
+          <div class="glass-r rounded-2xl p-5 col-span-2">
+            <iconify-icon icon="solar:diploma-bold" style="color:#F87171;font-size:1.75rem;" class="mb-3 block"></iconify-icon>
+            <div class="font-bold text-base mb-1">Credit Transfer</div>
+            <div class="text-white/45 text-sm leading-relaxed">Credits earned at KMU are officially recognized by your home university upon return.</div>
+          </div>
+          <div class="glass rounded-2xl p-5">
+            <iconify-icon icon="solar:home-wifi-angle-bold" style="color:#FBBF24;font-size:1.5rem;" class="mb-3 block"></iconify-icon>
+            <div class="font-bold text-sm mb-1">On-Campus Dormitory</div>
+            <div class="text-white/35 text-xs leading-relaxed">New dormitory building with meal plan options</div>
+          </div>
+          <div class="glass rounded-2xl p-5">
+            <iconify-icon icon="solar:calendar-bold" style="color:#34D399;font-size:1.5rem;" class="mb-3 block"></iconify-icon>
+            <div class="font-bold text-sm mb-1">Study Period</div>
+            <div class="text-white/35 text-xs leading-relaxed">One semester (Spring/Fall) or full academic year</div>
+          </div>
+          <div class="glass rounded-2xl p-5 col-span-2">
+            <iconify-icon icon="solar:buildings-2-bold" style="color:#60A5FA;font-size:1.5rem;" class="mb-3 block"></iconify-icon>
+            <div class="font-bold text-sm mb-1">10 Colleges Available</div>
+            <div class="text-white/35 text-xs leading-relaxed">Humanities · Social Sciences · Engineering · Natural Sciences · Arts · Business · Medicine · Law · Education · Music</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process" class="py-24" style="background:radial-gradient(ellipse 80% 50% at 50% 100%,rgba(185,28,28,.1) 0%,transparent 70%)">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <div class="text-cr-500 text-sm font-semibold tracking-widest uppercase mb-4">How It Works</div>
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight">Application Process</h2>
+        <p class="text-white/40 text-base mt-4">Follow these steps to complete your exchange application.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
+        <div class="reveal glass rounded-2xl p-6 border-t-2 border-cr-700">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-cr-700/30 border border-cr-700/50 flex items-center justify-center shrink-0"><span class="text-cr-400 font-bold text-sm">01</span></div>
+            <iconify-icon icon="solar:diploma-linear" style="color:#F87171;font-size:1.25rem;"></iconify-icon>
+          </div>
+          <h3 class="font-bold text-base mb-2">Nomination</h3>
+          <p class="text-white/45 text-sm leading-relaxed">Your home university's international office nominates you through the Kepin Partner Portal.</p>
+          <div class="mt-4 text-xs text-cr-400/80">By partner university</div>
+        </div>
+        <div class="reveal glass rounded-2xl p-6 border-t-2 border-gold-600" style="transition-delay:.1s">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-gold-600/20 border border-gold-600/40 flex items-center justify-center shrink-0"><span class="text-gold-400 font-bold text-sm">02</span></div>
+            <iconify-icon icon="solar:document-add-linear" style="color:#FBBF24;font-size:1.25rem;"></iconify-icon>
+          </div>
+          <h3 class="font-bold text-base mb-2">Online Application</h3>
+          <p class="text-white/45 text-sm leading-relaxed">Fill out the application form, upload your passport (AI auto-fill), transcripts, and supporting documents.</p>
+          <div class="mt-4 text-xs text-gold-500/80">AI passport auto-fill</div>
+        </div>
+        <div class="reveal glass rounded-2xl p-6 border-t-2 border-white/20" style="transition-delay:.2s">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-white/8 border border-white/15 flex items-center justify-center shrink-0"><span class="text-white/60 font-bold text-sm">03</span></div>
+            <iconify-icon icon="solar:checklist-minimalistic-linear" style="color:#94A3B8;font-size:1.25rem;"></iconify-icon>
+          </div>
+          <h3 class="font-bold text-base mb-2">Review & Acceptance</h3>
+          <p class="text-white/45 text-sm leading-relaxed">KMU International Office reviews your application and sends the acceptance letter via Kepin.</p>
+          <div class="mt-4 text-xs text-white/30">By KMU admin</div>
+        </div>
+        <div class="reveal glass rounded-2xl p-6 border-t-2 border-emerald-700" style="transition-delay:.3s">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-emerald-700/20 border border-emerald-700/40 flex items-center justify-center shrink-0"><span class="text-emerald-400 font-bold text-sm">04</span></div>
+            <iconify-icon icon="solar:star-shine-linear" style="color:#34D399;font-size:1.25rem;"></iconify-icon>
+          </div>
+          <h3 class="font-bold text-base mb-2">Enrollment</h3>
+          <p class="text-white/45 text-sm leading-relaxed">Pay dormitory fees, complete course registration, attend orientation, and start your semester!</p>
+          <div class="mt-4 text-xs text-emerald-500/80">You're in!</div>
+        </div>
+      </div>
+      <!-- 8-step status bar -->
+      <div class="glass rounded-2xl p-6 reveal">
+        <div class="text-center mb-6">
+          <div class="text-cr-400 text-xs font-semibold tracking-widest uppercase mb-1">Detailed Status Flow</div>
+          <h3 class="text-xl font-bold">After Nomination Confirmed</h3>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2">
+          <div class="flex items-center gap-1.5 glass-r rounded-lg px-3 py-2 text-xs"><span class="w-5 h-5 rounded-full bg-cr-700 flex items-center justify-center text-white text-xs font-bold shrink-0">1</span><span class="text-white/70">Nomination</span></div>
+          <iconify-icon icon="solar:arrow-right-linear" style="color:#374151;" class="self-center hidden sm:block"></iconify-icon>
+          <div class="flex items-center gap-1.5 glass-r rounded-lg px-3 py-2 text-xs"><span class="w-5 h-5 rounded-full bg-cr-700 flex items-center justify-center text-white text-xs font-bold shrink-0">2</span><span class="text-white/70">Application</span></div>
+          <iconify-icon icon="solar:arrow-right-linear" style="color:#374151;" class="self-center hidden sm:block"></iconify-icon>
+          <div class="flex items-center gap-1.5 glass rounded-lg px-3 py-2 text-xs"><span class="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center text-white text-xs font-bold shrink-0">3</span><span class="text-white/70">Document Review</span></div>
+          <iconify-icon icon="solar:arrow-right-linear" style="color:#374151;" class="self-center hidden sm:block"></iconify-icon>
+          <div class="flex items-center gap-1.5 glass rounded-lg px-3 py-2 text-xs"><span class="w-5 h-5 rounded-full bg-gold-600/50 flex items-center justify-center text-white text-xs font-bold shrink-0">4</span><span class="text-white/70">Accepted</span></div>
+          <iconify-icon icon="solar:arrow-right-linear" style="color:#374151;" class="self-center hidden sm:block"></iconify-icon>
+          <div class="flex items-center gap-1.5 glass rounded-lg px-3 py-2 text-xs"><span class="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center text-white text-xs font-bold shrink-0">5</span><span class="text-white/70">Dorm Payment</span></div>
+          <iconify-icon icon="solar:arrow-right-linear" style="color:#374151;" class="self-center hidden sm:block"></iconify-icon>
+          <div class="flex items-center gap-1.5 glass rounded-lg px-3 py-2 text-xs"><span class="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center text-white text-xs font-bold shrink-0">6</span><span class="text-white/70">Course Reg.</span></div>
+          <iconify-icon icon="solar:arrow-right-linear" style="color:#374151;" class="self-center hidden sm:block"></iconify-icon>
+          <div class="flex items-center gap-1.5 glass rounded-lg px-3 py-2 text-xs"><span class="w-5 h-5 rounded-full bg-emerald-700/60 flex items-center justify-center text-white text-xs font-bold shrink-0">7</span><span class="text-white/70">Orientation</span></div>
+          <iconify-icon icon="solar:arrow-right-linear" style="color:#374151;" class="self-center hidden sm:block"></iconify-icon>
+          <div class="flex items-center gap-1.5 glass rounded-lg px-3 py-2 text-xs border border-emerald-700/40"><span class="w-5 h-5 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs font-bold shrink-0">8</span><span class="text-emerald-300 font-semibold">Enrolled</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP SECTION -->
+  <section id="map-section" class="py-24 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10 reveal">
+        <div class="text-cr-500 text-sm font-semibold tracking-widest uppercase mb-4">Partner Network</div>
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight">Partner Universities Worldwide</h2>
+        <p class="text-white/40 text-base mt-4">Universities that have submitted nominations are highlighted on the map.</p>
+      </div>
+      <!-- Stats row -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 reveal">
+        <div class="glass-r rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-cr-400" id="stat-total">247</div>
+          <div class="text-xs text-white/40 mt-1">Total Partners</div>
+        </div>
+        <div class="glass rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-gold-400" id="stat-active">38</div>
+          <div class="text-xs text-white/40 mt-1">Active This Semester</div>
+        </div>
+        <div class="glass rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-white" id="stat-countries">83</div>
+          <div class="text-xs text-white/40 mt-1">Countries</div>
+        </div>
+        <div class="glass rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-emerald-400" id="stat-nominated">124</div>
+          <div class="text-xs text-white/40 mt-1">Students Nominated</div>
+        </div>
+      </div>
+      <!-- Map -->
+      <div class="reveal" style="transition-delay:.1s">
+        <div id="partner-map" style="height:480px;width:100%;background:#1a0808;"></div>
+      </div>
+      <!-- Legend -->
+      <div class="flex flex-wrap gap-4 mt-4 reveal">
+        <div class="flex items-center gap-2 text-xs text-white/50">
+          <span class="w-3 h-3 rounded-full bg-cr-500 inline-block"></span> Nomination submitted this semester
+        </div>
+        <div class="flex items-center gap-2 text-xs text-white/50">
+          <span class="w-3 h-3 rounded-full bg-gold-500 inline-block"></span> Partner university (no active nomination)
+        </div>
+        <div class="flex items-center gap-2 text-xs text-white/50">
+          <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Students currently enrolled
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="py-24 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <div class="text-cr-500 text-sm font-semibold tracking-widest uppercase mb-4">Platform Features</div>
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight">Everything You Need</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- AI Passport -->
+        <div class="reveal glass rounded-2xl p-7 lg:col-span-2 flex gap-6 items-start">
+          <div class="w-14 h-14 rounded-xl bg-cr-700/30 border border-cr-700/40 flex items-center justify-center shrink-0">
+            <iconify-icon icon="solar:passport-bold" style="color:#F87171;font-size:1.75rem;"></iconify-icon>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-2">AI Passport Auto-Fill</h3>
+            <p class="text-white/50 text-sm leading-relaxed">Upload your passport image and our AI instantly reads your name, date of birth, passport number, nationality, and expiry date — auto-filling the application form with zero typos.</p>
+          </div>
+        </div>
+        <!-- Chatbot -->
+        <div class="reveal glass rounded-2xl p-7" style="transition-delay:.1s">
+          <div class="w-12 h-12 rounded-xl bg-purple-700/20 border border-purple-700/30 flex items-center justify-center mb-4">
+            <iconify-icon icon="solar:chat-round-dots-bold" style="color:#A78BFA;font-size:1.5rem;"></iconify-icon>
+          </div>
+          <h3 class="font-bold text-base mb-2">AI Counseling Chatbot</h3>
+          <p class="text-white/50 text-sm leading-relaxed">24/7 AI assistant answers your questions about the application process, dormitory, visa requirements, and campus life.</p>
+        </div>
+        <!-- Status -->
+        <div class="reveal glass rounded-2xl p-7" style="transition-delay:.15s">
+          <div class="w-12 h-12 rounded-xl bg-gold-600/20 border border-gold-600/30 flex items-center justify-center mb-4">
+            <iconify-icon icon="solar:chart-2-bold" style="color:#FBBF24;font-size:1.5rem;"></iconify-icon>
+          </div>
+          <h3 class="font-bold text-base mb-2">Real-Time Status Tracking</h3>
+          <p class="text-white/50 text-sm leading-relaxed">Students and partner universities can monitor the 8-step application progress in real time.</p>
+        </div>
+        <!-- Email -->
+        <div class="reveal glass rounded-2xl p-7" style="transition-delay:.2s">
+          <div class="w-12 h-12 rounded-xl bg-blue-700/20 border border-blue-700/30 flex items-center justify-center mb-4">
+            <iconify-icon icon="solar:letter-bold" style="color:#60A5FA;font-size:1.5rem;"></iconify-icon>
+          </div>
+          <h3 class="font-bold text-base mb-2">Automated Email Notifications</h3>
+          <p class="text-white/50 text-sm leading-relaxed">Automatic emails at every stage — acceptance, dormitory instructions, course registration, orientation details.</p>
+        </div>
+        <!-- Partner portal -->
+        <div class="reveal glass rounded-2xl p-7 lg:col-span-2 flex gap-6 items-start" style="transition-delay:.25s">
+          <div class="w-14 h-14 rounded-xl bg-emerald-700/20 border border-emerald-700/30 flex items-center justify-center shrink-0">
+            <iconify-icon icon="solar:buildings-bold" style="color:#34D399;font-size:1.75rem;"></iconify-icon>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-2">Partner University Portal</h3>
+            <p class="text-white/50 text-sm leading-relaxed">International office coordinators at partner universities have a dedicated portal to submit nominations (including Excel bulk upload) and monitor the progress of all nominated students at a glance.</p>
+          </div>
+        </div>
+        <!-- Map -->
+        <div class="reveal glass rounded-2xl p-7" style="transition-delay:.3s">
+          <div class="w-12 h-12 rounded-xl bg-cr-700/20 border border-cr-700/30 flex items-center justify-center mb-4">
+            <iconify-icon icon="solar:map-point-bold" style="color:#F87171;font-size:1.5rem;"></iconify-icon>
+          </div>
+          <h3 class="font-bold text-base mb-2">Global Partner Map</h3>
+          <p class="text-white/50 text-sm leading-relaxed">Interactive world map showing all partner universities and active nominations for the current semester.</p>
+        </div>
+        <!-- Acceptance letter -->
+        <div class="reveal glass rounded-2xl p-7" style="transition-delay:.35s">
+          <div class="w-12 h-12 rounded-xl bg-pink-700/20 border border-pink-700/30 flex items-center justify-center mb-4">
+            <iconify-icon icon="solar:download-minimalistic-bold" style="color:#F472B6;font-size:1.5rem;"></iconify-icon>
+          </div>
+          <h3 class="font-bold text-base mb-2">Acceptance Letter Download</h3>
+          <p class="text-white/50 text-sm leading-relaxed">Download your official acceptance letter directly from Kepin once admitted — needed for your student visa application.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-24">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-12 reveal">
+        <div class="text-cr-500 text-sm font-semibold tracking-widest uppercase mb-4">FAQ</div>
+        <h2 class="text-4xl font-bold tracking-tight">Frequently Asked Questions</h2>
+      </div>
+      <div class="space-y-3 reveal">
+        <div class="glass rounded-xl overflow-hidden">
+          <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-semibold text-sm">Who is eligible to apply?</span>
+            <iconify-icon icon="solar:alt-arrow-down-linear" class="faq-icon shrink-0 transition-transform" style="color:#9CA3AF;"></iconify-icon>
+          </button>
+          <div class="faq-body px-6 pb-5 hidden"><p class="text-white/50 text-sm leading-relaxed">Students currently enrolled at a Keimyung University partner institution who have been officially nominated by their home university's international office. Direct (self) applications are not accepted.</p></div>
+        </div>
+        <div class="glass rounded-xl overflow-hidden">
+          <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-semibold text-sm">What documents do I need to submit?</span>
+            <iconify-icon icon="solar:alt-arrow-down-linear" class="faq-icon shrink-0 transition-transform" style="color:#9CA3AF;"></iconify-icon>
+          </button>
+          <div class="faq-body px-6 pb-5 hidden"><p class="text-white/50 text-sm leading-relaxed">Required: Passport copy, official transcript (GPA), Certificate of Enrollment, passport-size photo, and language proficiency certificate (if applicable). Your passport details will be auto-filled by AI when you upload the image. Full document checklist is provided in the invitation email from KMU.</p></div>
+        </div>
+        <div class="glass rounded-xl overflow-hidden">
+          <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-semibold text-sm">Is dormitory accommodation guaranteed?</span>
+            <iconify-icon icon="solar:alt-arrow-down-linear" class="faq-icon shrink-0 transition-transform" style="color:#9CA3AF;"></iconify-icon>
+          </button>
+          <div class="faq-body px-6 pb-5 hidden"><p class="text-white/50 text-sm leading-relaxed">Exchange students receive dormitory priority. Options include the New Dormitory Building with flexible meal plans (dinner-only or all meals). Allocation is on a first-come, first-served basis after acceptance, so we recommend completing dormitory registration promptly.</p></div>
+        </div>
+        <div class="glass rounded-xl overflow-hidden">
+          <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-semibold text-sm">Can I take courses in English?</span>
+            <iconify-icon icon="solar:alt-arrow-down-linear" class="faq-icon shrink-0 transition-transform" style="color:#9CA3AF;"></iconify-icon>
+          </button>
+          <div class="faq-body px-6 pb-5 hidden"><p class="text-white/50 text-sm leading-relaxed">Yes. Keimyung University offers a large selection of English-medium courses across multiple colleges. You may also take Korean language courses or a mix of English and Korean classes. The full list of English-taught courses is shared during orientation.</p></div>
+        </div>
+        <div class="glass rounded-xl overflow-hidden">
+          <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-semibold text-sm">How does the partner university coordinator create an account?</span>
+            <iconify-icon icon="solar:alt-arrow-down-linear" class="faq-icon shrink-0 transition-transform" style="color:#9CA3AF;"></iconify-icon>
+          </button>
+          <div class="faq-body px-6 pb-5 hidden"><p class="text-white/50 text-sm leading-relaxed">KMU's International Office sends an invitation email to the coordinator at each partner university. Clicking the link activates their partner account, after which they can immediately begin submitting nominations through the Partner Portal.</p></div>
+        </div>
+        <div class="glass rounded-xl overflow-hidden">
+          <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-semibold text-sm">What is the AI chatbot, and what can it help with?</span>
+            <iconify-icon icon="solar:alt-arrow-down-linear" class="faq-icon shrink-0 transition-transform" style="color:#9CA3AF;"></iconify-icon>
+          </button>
+          <div class="faq-body px-6 pb-5 hidden"><p class="text-white/50 text-sm leading-relaxed">The Kepin AI Counseling Assistant is available 24/7 and can answer questions about the application timeline, required documents, dormitory options, visa procedures, campus facilities, and life in Daegu. Click the red chat button at the bottom right to start a conversation.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 relative overflow-hidden" style="background:linear-gradient(135deg,#1a0505 0%,#2d0a0a 50%,#1a0505 100%)">
+    <div class="absolute inset-0" style="background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(185,28,28,.15) 0%,transparent 70%)"></div>
+    <div class="relative max-w-3xl mx-auto px-4 text-center reveal">
+      <div class="text-cr-400 text-sm font-semibold tracking-widest uppercase mb-6">Start Your Journey</div>
+      <h2 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6">Your Semester in Korea<br>Starts Here</h2>
+      <p class="text-white/50 text-lg leading-relaxed mb-10">Received your nomination? Complete your application on Kepin today.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <button onclick="openLogin('student')" class="btn btn-r text-base px-8 py-4">
+          <iconify-icon icon="solar:user-plus-bold"></iconify-icon> Student Application
+        </button>
+        <button onclick="openLogin('partner')" class="btn btn-g text-base px-8 py-4">
+          <iconify-icon icon="solar:buildings-2-linear"></iconify-icon> Partner Portal
+        </button>
+      </div>
+      <div class="mt-10 flex flex-wrap justify-center gap-6 text-sm text-white/30">
+        <span class="flex items-center gap-1.5"><iconify-icon icon="solar:shield-check-linear" style="color:#F87171;"></iconify-icon> Encrypted &amp; Secure</span>
+        <span class="flex items-center gap-1.5"><iconify-icon icon="solar:global-linear" style="color:#F87171;"></iconify-icon> English · Korean · Chinese</span>
+        <span class="flex items-center gap-1.5"><iconify-icon icon="solar:chat-round-dots-linear" style="color:#F87171;"></iconify-icon> 24/7 AI Chatbot Support</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/5 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cr-700 to-cr-500 flex items-center justify-center">
+              <iconify-icon icon="solar:graduation-cap-bold" style="color:#fff;font-size:1rem;"></iconify-icon>
+            </div>
+            <span class="font-bold text-lg">Kepin</span>
+          </div>
+          <p class="text-white/35 text-sm leading-relaxed">Keimyung University<br>Inbound Exchange Application Platform</p>
+        </div>
+        <div>
+          <div class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-3">Links</div>
+          <ul class="space-y-2 text-sm text-white/40">
+            <li><a href="https://www.kmu.ac.kr/inter/index.do" target="_blank" class="hover:text-white transition-colors flex items-center gap-1">KMU International Office <iconify-icon icon="solar:arrow-right-up-linear"></iconify-icon></a></li>
+            <li><a href="#about" class="hover:text-white transition-colors">About the Program</a></li>
+            <li><a href="#process" class="hover:text-white transition-colors">How to Apply</a></li>
+            <li><a href="#map-section" class="hover:text-white transition-colors">Partner Map</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-3">Portals</div>
+          <ul class="space-y-2 text-sm text-white/40">
+            <li><button onclick="openLogin('student')" class="hover:text-white transition-colors text-left">Student Application Portal</button></li>
+            <li><button onclick="openLogin('partner')" class="hover:text-white transition-colors text-left">Partner University Portal</button></li>
+            <li><button onclick="openLogin('admin')" class="hover:text-white transition-colors text-left">KMU Admin Login</button></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/5 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-white/25">
+        <span>© 2026 Keimyung University International Office. All rights reserved.</span>
+        <span>Powered by Kepin v1.0</span>
+      </div>
+    </div>
+  </footer>
+</div><!-- /page-home -->
+
+
+<!-- ══════════════ LOGIN MODALS ══════════════ -->
+
+<!-- Student Login -->
+<div id="modal-student" class="modal">
+  <div class="modal-bg" onclick="closeModal('student')"></div>
+  <div class="modal-box">
+    <div class="glass rounded-2xl p-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <div class="text-cr-400 text-xs font-semibold tracking-widest uppercase mb-1">Student Portal</div>
+          <h2 class="text-2xl font-bold">Sign In</h2>
+        </div>
+        <button onclick="closeModal('student')" class="w-9 h-9 rounded-xl glass flex items-center justify-center hover:bg-white/10 transition-colors">
+          <iconify-icon icon="solar:close-linear" style="color:#9CA3AF;"></iconify-icon>
+        </button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs text-white/50 mb-1.5 block">Email Address</label>
+          <input type="email" class="form-input" placeholder="your@email.com">
+        </div>
+        <div>
+          <label class="text-xs text-white/50 mb-1.5 block">Password</label>
+          <input type="password" class="form-input" placeholder="••••••••">
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <label class="flex items-center gap-2 text-white/40"><input type="checkbox" class="rounded"> Remember me</label>
+          <a href="#" class="text-cr-400 hover:text-cr-300 transition-colors">Forgot password?</a>
+        </div>
+        <button class="btn btn-r w-full justify-center py-3 mt-2">Sign In <iconify-icon icon="solar:arrow-right-bold"></iconify-icon></button>
+      </div>
+      <div class="mt-5 pt-5 border-t border-white/8 text-center">
+        <p class="text-white/40 text-sm">Don't have an account? <a href="#" class="text-cr-400 hover:text-cr-300 transition-colors">Register with invite link</a></p>
+        <p class="text-white/25 text-xs mt-2">Account activation links are sent by KMU after nomination confirmation.</p>
+      </div>
+      <div class="mt-4 glass-r rounded-xl p-3 flex items-start gap-2.5">
+        <iconify-icon icon="solar:info-circle-linear" style="color:#F87171;font-size:1rem;" class="shrink-0 mt-0.5"></iconify-icon>
+        <p class="text-white/50 text-xs leading-relaxed">Students receive an invitation email from KMU International Office after their nomination is confirmed. Use the link in that email to activate your Kepin account.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Partner Login -->
+<div id="modal-partner" class="modal">
+  <div class="modal-bg" onclick="closeModal('partner')"></div>
+  <div class="modal-box">
+    <div class="glass rounded-2xl p-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <div class="text-emerald-400 text-xs font-semibold tracking-widest uppercase mb-1">Partner University Portal</div>
+          <h2 class="text-2xl font-bold">Coordinator Sign In</h2>
+        </div>
+        <button onclick="closeModal('partner')" class="w-9 h-9 rounded-xl glass flex items-center justify-center hover:bg-white/10 transition-colors">
+          <iconify-icon icon="solar:close-linear" style="color:#9CA3AF;"></iconify-icon>
+        </button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs text-white/50 mb-1.5 block">Institutional Email</label>
+          <input type="email" class="form-input" placeholder="coordinator@university.edu">
+        </div>
+        <div>
+          <label class="text-xs text-white/50 mb-1.5 block">Password</label>
+          <input type="password" class="form-input" placeholder="••••••••">
+        </div>
+        <button class="btn w-full justify-center py-3 mt-2" style="background:linear-gradient(135deg,#065f46,#059669);color:#fff;border:1px solid rgba(52,211,153,.2);box-shadow:0 8px 24px rgba(5,150,105,.2)">
+          Sign In to Partner Portal <iconify-icon icon="solar:arrow-right-bold"></iconify-icon>
+        </button>
+      </div>
+      <div class="mt-5 pt-5 border-t border-white/8 text-center">
+        <p class="text-white/40 text-sm">Not registered yet?</p>
+        <p class="text-white/25 text-xs mt-1">Contact <span class="text-emerald-400">KMU International Office</span> to receive your partner account invitation.</p>
+      </div>
+      <div class="mt-4 glass rounded-xl p-3 border border-emerald-700/20 flex items-start gap-2.5">
+        <iconify-icon icon="solar:buildings-2-linear" style="color:#34D399;font-size:1rem;" class="shrink-0 mt-0.5"></iconify-icon>
+        <p class="text-white/50 text-xs leading-relaxed">Partner portal allows you to submit nominations, track nominated students' application progress, and communicate with KMU International Office.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Login -->
+<div id="modal-admin" class="modal">
+  <div class="modal-bg" onclick="closeModal('admin')"></div>
+  <div class="modal-box">
+    <div class="glass rounded-2xl p-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <div class="text-gold-400 text-xs font-semibold tracking-widest uppercase mb-1">KMU International Office</div>
+          <h2 class="text-2xl font-bold">Admin Login</h2>
+        </div>
+        <button onclick="closeModal('admin')" class="w-9 h-9 rounded-xl glass flex items-center justify-center hover:bg-white/10 transition-colors">
+          <iconify-icon icon="solar:close-linear" style="color:#9CA3AF;"></iconify-icon>
+        </button>
+      </div>
+      <div class="glass-r rounded-xl p-3 flex items-start gap-2.5 mb-5">
+        <iconify-icon icon="solar:shield-bold" style="color:#F59E0B;font-size:1rem;" class="shrink-0 mt-0.5"></iconify-icon>
+        <p class="text-white/50 text-xs leading-relaxed">This portal is exclusively for Keimyung University International Office staff. Unauthorized access attempts are logged.</p>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs text-white/50 mb-1.5 block">KMU Staff Email</label>
+          <input type="email" class="form-input" placeholder="staff@kmu.ac.kr">
+        </div>
+        <div>
+          <label class="text-xs text-white/50 mb-1.5 block">Password</label>
+          <input type="password" class="form-input" placeholder="••••••••">
+        </div>
+        <div>
+          <label class="text-xs text-white/50 mb-1.5 block">2FA Code (if enabled)</label>
+          <input type="text" class="form-input" placeholder="6-digit code" maxlength="6">
+        </div>
+        <button class="btn w-full justify-center py-3 mt-2" style="background:linear-gradient(135deg,#78350f,#D97706);color:#fff;border:1px solid rgba(251,191,36,.2);box-shadow:0 8px 24px rgba(217,119,6,.2)">
+          <iconify-icon icon="solar:shield-check-bold"></iconify-icon> Admin Sign In
+        </button>
+      </div>
+      <div class="mt-5 pt-5 border-t border-white/8 text-center">
+        <p class="text-white/25 text-xs">For account issues, contact the Kepin system administrator.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════ AI CHATBOT ══════════════ -->
+<div id="chat-window" class="glass rounded-2xl flex flex-col" style="border:1px solid rgba(185,28,28,.25)">
+  <!-- Header -->
+  <div class="flex items-center justify-between px-4 py-3.5 border-b border-white/8">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cr-700 to-cr-500 flex items-center justify-center">
+        <iconify-icon icon="solar:chat-round-dots-bold" style="color:#fff;font-size:.9rem;"></iconify-icon>
+      </div>
+      <div>
+        <div class="text-sm font-bold">Kepin AI Assistant</div>
+        <div class="text-xs text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span> Online 24/7</div>
+      </div>
+    </div>
+    <button onclick="toggleChat()" class="text-white/40 hover:text-white transition-colors">
+      <iconify-icon icon="solar:minimize-square-linear" style="font-size:1.1rem;"></iconify-icon>
+    </button>
+  </div>
+  <!-- Messages -->
+  <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3" style="max-height:260px">
+    <div class="chat-msg bot">
+      Hi! I'm Kepin's AI Counseling Assistant. I can help you with questions about the application process, required documents, dormitory, visas, and life at Keimyung University. How can I help you today?
+    </div>
+    <div class="flex gap-2 flex-wrap">
+      <button onclick="quickAsk('How do I apply?')" class="glass-r rounded-lg px-3 py-1.5 text-xs text-cr-300 hover:text-cr-200 transition-colors">How do I apply?</button>
+      <button onclick="quickAsk('What documents are required?')" class="glass-r rounded-lg px-3 py-1.5 text-xs text-cr-300 hover:text-cr-200 transition-colors">Required documents</button>
+      <button onclick="quickAsk('Tell me about dormitory options')" class="glass-r rounded-lg px-3 py-1.5 text-xs text-cr-300 hover:text-cr-200 transition-colors">Dormitory</button>
+    </div>
+  </div>
+  <!-- Input -->
+  <div class="border-t border-white/8 px-4 py-3 flex items-center gap-3">
+    <input id="chat-input" type="text" placeholder="Ask anything about KMU exchange..." onkeydown="if(event.key==='Enter')sendChat()">
+    <button onclick="sendChat()" class="w-8 h-8 rounded-lg bg-cr-700 hover:bg-cr-600 flex items-center justify-center transition-colors shrink-0">
+      <iconify-icon icon="solar:arrow-up-bold" style="color:#fff;font-size:.9rem;"></iconify-icon>
+    </button>
+  </div>
+</div>
+
+<!-- Chat toggle button -->
+<button id="chat-btn" onclick="toggleChat()" title="AI Counseling Assistant">
+  <div class="ripple"></div>
+  <iconify-icon icon="solar:chat-round-dots-bold" style="color:#fff;font-size:1.4rem;position:relative;z-index:1;"></iconify-icon>
+</button>
+
+
+<!-- ══════════════ SCRIPTS ══════════════ -->
+<script>
+// ── NAV SCROLL
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40), {passive:true});
+
+// ── REVEAL
+const obs = new IntersectionObserver(entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')), {threshold:.1, rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// ── FAQ
+function toggleFaq(btn) {
+  const body = btn.nextElementSibling;
+  const icon = btn.querySelector('.faq-icon');
+  const open = !body.classList.contains('hidden');
+  document.querySelectorAll('.faq-body').forEach(b => b.classList.add('hidden'));
+  document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = '');
+  if (!open) { body.classList.remove('hidden'); icon.style.transform = 'rotate(180deg)'; }
+}
+
+// ── LOGIN MODALS
+function openLogin(type) {
+  document.getElementById('modal-'+type).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(type) {
+  document.getElementById('modal-'+type).classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') { ['student','partner','admin'].forEach(closeModal); document.body.style.overflow=''; } });
+
+// ── CHAT
+let chatOpen = false;
+function toggleChat() {
+  chatOpen = !chatOpen;
+  document.getElementById('chat-window').classList.toggle('open', chatOpen);
+  const btn = document.getElementById('chat-btn');
+  btn.innerHTML = chatOpen
+    ? '<div class="ripple"></div><iconify-icon icon="solar:close-bold" style="color:#fff;font-size:1.2rem;position:relative;z-index:1;"></iconify-icon>'
+    : '<div class="ripple"></div><iconify-icon icon="solar:chat-round-dots-bold" style="color:#fff;font-size:1.4rem;position:relative;z-index:1;"></iconify-icon>';
+}
+
+function quickAsk(q) { document.getElementById('chat-input').value = q; sendChat(); }
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  const box = document.getElementById('chat-messages');
+
+  // Remove quick-ask buttons
+  const btns = box.querySelector('.flex.gap-2.flex-wrap');
+  if (btns) btns.remove();
+
+  // User bubble
+  const userEl = document.createElement('div');
+  userEl.className = 'chat-msg user';
+  userEl.textContent = msg;
+  box.appendChild(userEl);
+
+  // Typing indicator
+  const typing = document.createElement('div');
+  typing.className = 'chat-msg bot typing';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  box.appendChild(typing);
+  box.scrollTop = box.scrollHeight;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `You are Kepin AI Counseling Assistant for Keimyung University (KMU), Daegu, South Korea.
+You help prospective inbound exchange students with questions about: application process, required documents (passport, transcript, enrollment certificate, language cert), dormitory options (new dormitory, meal plans B=dinner only, A=all meals), academic calendar (Spring: March-June, Fall: September-December), campus life, visa procedures, nomination process, acceptance letters, course registration, orientation.
+Key facts: KMU established 1968, located in Daegu (Seongseo Campus), 247+ partner universities, 83 countries. Applications go through the Kepin platform.
+Be friendly, concise, helpful. Answer in the same language the user writes in (English or Korean). Keep responses under 120 words.`,
+        messages: [{ role: 'user', content: msg }]
+      })
+    });
+    const data = await res.json();
+    typing.remove();
+    const botEl = document.createElement('div');
+    botEl.className = 'chat-msg bot';
+    botEl.textContent = data.content?.[0]?.text || 'Sorry, I could not process that. Please try again.';
+    box.appendChild(botEl);
+  } catch(e) {
+    typing.remove();
+    const errEl = document.createElement('div');
+    errEl.className = 'chat-msg bot';
+    errEl.textContent = 'Connection error. Please try again in a moment.';
+    box.appendChild(errEl);
+  }
+  box.scrollTop = box.scrollHeight;
+}
+
+// ── MAP
+const partnerData = [
+  // Active nominations (red)
+  {lat:13.6,lng:100.6,name:"Thammasat University",country:"Thailand",students:8,active:true},
+  {lat:18.8,lng:98.97,name:"Chiang Mai University",country:"Thailand",students:5,active:true},
+  {lat:13.76,lng:100.53,name:"Mahidol University",country:"Thailand",students:6,active:true},
+  {lat:31.3,lng:121.5,name:"Fudan University",country:"China",students:12,active:true},
+  {lat:30.5,lng:114.35,name:"Wuhan University",country:"China",students:4,active:true},
+  {lat:34.69,lng:135.5,name:"Kansai University",country:"Japan",students:9,active:true},
+  {lat:35.02,lng:135.78,name:"Ritsumeikan University",country:"Japan",students:7,active:true},
+  {lat:35.46,lng:139.62,name:"Tokai University",country:"Japan",students:3,active:true},
+  {lat:3.12,lng:101.65,name:"Universiti Malaya",country:"Malaysia",students:4,active:true},
+  {lat:21.03,lng:105.78,name:"Hanoi University",country:"Vietnam",students:6,active:true},
+  {lat:24.13,lng:120.68,name:"Tunghai University",country:"Taiwan",students:5,active:true},
+  {lat:25.04,lng:121.53,name:"Fu Jen Catholic University",country:"Taiwan",students:4,active:true},
+  {lat:14.07,lng:100.6,name:"Kasetsart University",country:"Thailand",students:3,active:true},
+  {lat:39.91,lng:116.4,name:"Beijing Language and Culture University",country:"China",students:10,active:true},
+  {lat:22.3,lng:114.2,name:"Hong Kong Baptist University",country:"Hong Kong",students:2,active:true},
+  // Partner only (gold)
+  {lat:-36.85,lng:174.77,name:"University of Auckland",country:"New Zealand",students:0,active:false},
+  {lat:51.5,lng:-0.12,name:"University of Westminster",country:"UK",students:0,active:false},
+  {lat:48.85,lng:2.35,name:"Paris Cité University",country:"France",students:0,active:false},
+  {lat:52.52,lng:13.41,name:"Freie Universität Berlin",country:"Germany",students:0,active:false},
+  {lat:40.42,lng:-3.7,name:"Universidad Autónoma de Madrid",country:"Spain",students:0,active:false},
+  {lat:-23.55,lng:-46.63,name:"Universidade de São Paulo",country:"Brazil",students:0,active:false},
+  {lat:37.42,lng:-122.17,name:"Stanford University",country:"USA",students:0,active:false,note:"Research partner only"},
+  {lat:55.75,lng:37.62,name:"RUDN University",country:"Russia",students:0,active:false},
+  {lat:19.07,lng:72.87,name:"University of Mumbai",country:"India",students:0,active:false},
+  // Enrolled (emerald)
+  {lat:13.6,lng:100.6,name:"(Enrolled from TU)",country:"Thailand",students:8,enrolled:true,active:false,skip:true},
+  {lat:34.69,lng:135.5,name:"(Enrolled from KU)",country:"Japan",students:9,enrolled:true,active:false,skip:true},
+];
+
+function initMap() {
+  const map = L.map('partner-map', {
+    center: [25, 20],
+    zoom: 2,
+    zoomControl: true,
+    attributionControl: false
+  });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 10,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  partnerData.filter(d => !d.skip).forEach(d => {
+    const color = d.enrolled ? '#10b981' : d.active ? '#ef4444' : '#f59e0b';
+    const size = d.active ? 10 : 8;
+    const marker = L.circleMarker([d.lat, d.lng], {
+      radius: size,
+      fillColor: color,
+      color: 'rgba(0,0,0,0.3)',
+      weight: 1.5,
+      opacity: 1,
+      fillOpacity: d.active ? 0.9 : 0.65
+    }).addTo(map);
+
+    const badge = d.active
+      ? `<span style="color:#f87171;font-weight:700">${d.students} student${d.students>1?'s':''} nominated</span>`
+      : d.enrolled ? `<span style="color:#34d399;font-weight:700">Currently enrolled</span>`
+      : `<span style="color:#9ca3af">Partner university</span>`;
+
+    marker.bindPopup(`
+      <div style="min-width:160px">
+        <div style="font-weight:700;margin-bottom:2px">${d.name}</div>
+        <div style="color:rgba(245,240,239,.5);font-size:.75rem;margin-bottom:6px">${d.country}</div>
+        ${badge}
+        ${d.note?`<div style="color:rgba(245,240,239,.4);font-size:.7rem;margin-top:4px">${d.note}</div>`:''}
+      </div>
+    `, {className:'map-popup'});
+  });
+
+  // Add KMU marker
+  L.circleMarker([35.83, 128.53], {
+    radius: 14,
+    fillColor: '#DC2626',
+    color: '#fff',
+    weight: 2.5,
+    opacity: 1,
+    fillOpacity: 1
+  }).addTo(map).bindPopup('<div style="font-weight:700">Keimyung University<br><span style="color:#f87171;font-size:.75rem">Daegu, South Korea</span></div>', {className:'map-popup'}).openPopup();
+}
+
+// Init map when visible
+const mapObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) {
+    initMap();
+    mapObs.disconnect();
+  }
+}, {threshold: 0.1});
+mapObs.observe(document.getElementById('partner-map'));
+
+// ══════════════════════════════════════════════
+// HERO CANVAS: Aurora + Particles + Grid + Cursor
+// ══════════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cursorGlow = document.getElementById('cursor-glow');
+  const card = canvas.parentElement;
+
+  let W, H, dpr, mouse = {x: 0.5, y: 0.4};
+  let targetMouse = {x: 0.5, y: 0.4};
+  let animId;
+
+  // ── Resize
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    const r = canvas.getBoundingClientRect();
+    W = r.width; H = r.height;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.scale(dpr, dpr);
+    initParticles();
+  }
+
+  // ── Mouse tracking on card
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    targetMouse.x = (e.clientX - r.left) / r.width;
+    targetMouse.y = (e.clientY - r.top) / r.height;
+    if (cursorGlow) {
+      cursorGlow.style.left = (targetMouse.x * 100) + '%';
+      cursorGlow.style.top = (targetMouse.y * 100) + '%';
+    }
+  });
+  card.addEventListener('mouseleave', () => {
+    targetMouse.x = 0.5; targetMouse.y = 0.4;
+  });
+
+  // ── Aurora blobs
+  const blobs = [
+    { cx: 0.3, cy: 0.35, rx: 0.55, ry: 0.45, r: 185, g: 28,  b: 28,  a: 0.22, speed: 0.0008, phase: 0    },
+    { cx: 0.7, cy: 0.6,  rx: 0.5,  ry: 0.4,  r: 245, g: 158, b: 11,  a: 0.10, speed: 0.0011, phase: 1.2  },
+    { cx: 0.5, cy: 0.2,  rx: 0.4,  ry: 0.35, r: 167, g: 28,  b: 100, a: 0.09, speed: 0.0007, phase: 2.4  },
+    { cx: 0.15,cy: 0.75, rx: 0.38, ry: 0.32, r: 220, g: 38,  b: 38,  a: 0.13, speed: 0.0013, phase: 0.8  },
+    { cx: 0.85,cy: 0.25, rx: 0.42, ry: 0.38, r: 100, g: 58,  b: 200, a: 0.08, speed: 0.0009, phase: 3.5  },
+  ];
+
+  function drawAurora(t) {
+    blobs.forEach(b => {
+      const ox = Math.sin(t * b.speed * 1000 + b.phase) * 0.12;
+      const oy = Math.cos(t * b.speed * 700 + b.phase + 1) * 0.10;
+      // mouse parallax
+      const px = (mouse.x - 0.5) * 0.06;
+      const py = (mouse.y - 0.5) * 0.05;
+      const cx = (b.cx + ox + px) * W;
+      const cy = (b.cy + oy + py) * H;
+      const rx = b.rx * W;
+      const ry = b.ry * H;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rx, ry, t * b.speed * 500, 0, Math.PI * 2);
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(rx, ry));
+      grad.addColorStop(0, `rgba(${b.r},${b.g},${b.b},${b.a})`);
+      grad.addColorStop(0.5, `rgba(${b.r},${b.g},${b.b},${b.a * 0.4})`);
+      grad.addColorStop(1, `rgba(${b.r},${b.g},${b.b},0)`);
+      ctx.fillStyle = grad;
+      ctx.filter = 'blur(22px)';
+      ctx.fill();
+      ctx.filter = 'none';
+      ctx.restore();
+    });
+  }
+
+  // ── Grid
+  function drawGrid() {
+    const gapX = 28, gapY = 28;
+    ctx.save();
+    // Subtle perspective tilt from mouse
+    const tiltX = (mouse.x - 0.5) * 8;
+    const tiltY = (mouse.y - 0.5) * 6;
+    ctx.translate(tiltX, tiltY);
+    ctx.strokeStyle = 'rgba(185,28,28,0.07)';
+    ctx.lineWidth = 0.6;
+    // Vertical lines
+    for (let x = -gapX; x <= W + gapX; x += gapX) {
+      ctx.beginPath();
+      ctx.moveTo(x - tiltX, 0);
+      ctx.lineTo(x - tiltX, H);
+      ctx.stroke();
+    }
+    // Horizontal lines
+    for (let y = 0; y <= H; y += gapY) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+    // Dot intersections
+    ctx.fillStyle = 'rgba(220,38,38,0.12)';
+    for (let x = -gapX; x <= W + gapX; x += gapX) {
+      for (let y = 0; y <= H; y += gapY) {
+        ctx.beginPath();
+        ctx.arc(x - tiltX, y, 1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
+  // ── Particles
+  let particles = [];
+  function initParticles() {
+    particles = [];
+    const count = 46;
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 1.8 + 0.4,
+        a: Math.random() * 0.5 + 0.15,
+        hue: Math.random() < 0.7 ? 0 : (Math.random() < 0.5 ? 38 : 290), // red / gold / purple
+      });
+    }
+  }
+
+  function drawParticles(t) {
+    const connDist = 70;
+    particles.forEach((p, i) => {
+      // Mouse attraction (subtle)
+      const mx = mouse.x * W, my = mouse.y * H;
+      const dx = mx - p.x, dy = my - p.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 120) {
+        p.vx += dx * 0.00008;
+        p.vy += dy * 0.00008;
+      }
+      // Speed cap
+      const spd = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+      if (spd > 0.7) { p.vx *= 0.7 / spd; p.vy *= 0.7 / spd; }
+
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+
+      // Draw dot
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.hue},80%,65%,${p.a})`;
+      ctx.fill();
+
+      // Connect nearby particles
+      for (let j = i + 1; j < particles.length; j++) {
+        const q = particles[j];
+        const dx2 = p.x - q.x, dy2 = p.y - q.y;
+        const d2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+        if (d2 < connDist) {
+          const alpha = (1 - d2 / connDist) * 0.18;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = `rgba(220,38,38,${alpha})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    });
+  }
+
+  // ── Scanline shimmer
+  function drawScanlines(t) {
+    const lineY = ((t * 0.04) % (H + 60)) - 30;
+    const grad = ctx.createLinearGradient(0, lineY, 0, lineY + 60);
+    grad.addColorStop(0, 'rgba(220,38,38,0)');
+    grad.addColorStop(0.5, 'rgba(220,38,38,0.06)');
+    grad.addColorStop(1, 'rgba(220,38,38,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, lineY, W, 60);
+  }
+
+  // ── Render loop
+  let last = 0;
+  function render(t) {
+    animId = requestAnimationFrame(render);
+    const dt = t - last; last = t;
+
+    // Smooth mouse
+    mouse.x += (targetMouse.x - mouse.x) * 0.05;
+    mouse.y += (targetMouse.y - mouse.y) * 0.05;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // 1. Dark base
+    ctx.fillStyle = 'rgba(10,4,4,1)';
+    ctx.fillRect(0, 0, W, H);
+
+    // 2. Grid
+    drawGrid();
+
+    // 3. Aurora (blurred blobs)
+    drawAurora(t);
+
+    // 4. Particle network
+    drawParticles(t);
+
+    // 5. Scanline
+    drawScanlines(t);
+
+    // 6. Vignette
+    const vig = ctx.createRadialGradient(W/2, H/2, H*0.2, W/2, H/2, H*0.9);
+    vig.addColorStop(0, 'rgba(0,0,0,0)');
+    vig.addColorStop(1, 'rgba(0,0,0,0.55)');
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // ── Init
+  window.addEventListener('resize', () => { resize(); });
+  resize();
+  requestAnimationFrame(render);
+})();
+</script>
+
+</body>
+</html>
