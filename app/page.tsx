@@ -260,7 +260,7 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ WORKFLOW ══════════════ */}
-        <section id="workflow" className="border-t border-white/5 flex flex-col justify-center scroll-mt-14" style={{ height: "calc(100vh - 52px)" }}>
+        <section id="workflow" className="border-t border-white/5 flex flex-col scroll-mt-14 overflow-y-auto" style={{ height: "calc(100vh - 52px)" }}>
           <div className="mx-auto max-w-7xl px-6">
             <SectionTitle
               eyebrow="Workflow"
@@ -326,7 +326,7 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ FAQ ══════════════ */}
-        <section id="faq" className="border-t border-white/5 flex flex-col justify-center scroll-mt-14" style={{ height: "calc(100vh - 52px)" }}>
+        <section id="faq" className="border-t border-white/5 flex flex-col justify-center scroll-mt-14 overflow-y-auto" style={{ height: "calc(100vh - 52px)" }}>
           <div className="mx-auto max-w-3xl px-6">
             <div className="text-center mb-14">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-red-500 mb-4">FAQ</div>
