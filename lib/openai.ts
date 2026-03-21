@@ -1,15 +1,15 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+function getOpenAI() {
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+}
 
 /**
  * Generate an embedding vector for the given text
  * using text-embedding-3-small (1536 dimensions).
  */
 export async function embedText(text: string): Promise<number[]> {
-  const response = await openai.embeddings.create({
+  const response = await getOpenAI().embeddings.create({
     model: "text-embedding-3-small",
     input: text.replace(/\n/g, " "),
   });
@@ -21,7 +21,7 @@ export async function embedText(text: string): Promise<number[]> {
  * Uses GPT-4o-mini for fast, cheap extraction.
  */
 export async function parsePassportOcr(rawText: string) {
-  const response = await openai.chat.completions.create({
+  const response = await getOpenAI().chat.completions.create({
     model: "gpt-4o-mini",
     temperature: 0,
     response_format: { type: "json_object" },
