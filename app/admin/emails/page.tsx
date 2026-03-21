@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { PortalShell } from "@/components/portal-shell";
 
 /* ── 파트너 대학 목록 ─────────────────────────────────────────── */
@@ -133,6 +133,13 @@ export default function AdminEmailsPage() {
   const [sendOpen, setSendOpen]       = useState(false);
   const [history, setHistory]         = useState<HistoryEntry[]>(INIT_HISTORY);
 
+  /* 템플릿 편집 */
+  const [isEditing, setIsEditing] = useState(false);
+  const [templateData, setTemplateData] = useState(
+    STEPS.map((s) => ({ subject: s.subject, body: s.body }))
+  );
+  const [editDraft, setEditDraft] = useState({ subject: "", body: "" });
+
   /* Step-1/2 파일 첨부 */
   const [attachFiles, setAttachFiles] = useState<Record<string, File | null>>({
     factsheet: null, schedule: null, admission_letters: null,
@@ -144,8 +151,9 @@ export default function AdminEmailsPage() {
   );
   const [selectedGrads, setSelectedGrads] = useState<Set<string>>(new Set());
 
-  const step   = STEPS[activeStep];
+  const step    = STEPS[activeStep];
   const isStep3 = activeStep === 2;
+  const currentTemplate = templateData[activeStep];
 
   /* 파트너 필터 */
   const filtered = PARTNERS.filter(
@@ -180,7 +188,7 @@ export default function AdminEmailsPage() {
   function handleSend() {
     const count = isStep3 ? selectedGrads.size : selected.size;
     setHistory((prev) => [
-      { date: new Date().toISOString().slice(0, 10), step: step.tag, count, subject: step.subject },
+      { date: new Date().toISOString().slice(0, 10), step: step.tag, count, subject: currentTemplate.subject },
       ...prev,
     ]);
     setSendOpen(false);
@@ -188,6 +196,22 @@ export default function AdminEmailsPage() {
     setSelected(new Set());
     setSelectedGrads(new Set());
     alert(`✓ ${count}${isStep3 ? "명" : "개 대학"}에 발송 완료`);
+  }
+
+  function startEdit() {
+    setEditDraft({ subject: currentTemplate.subject, body: currentTemplate.body });
+    setIsEditing(true);
+  }
+  function saveEdit() {
+    setTemplateData((prev) => {
+      const next = [...prev];
+      next[activeStep] = { ...editDraft };
+      return next;
+    });
+    setIsEditing(false);
+  }
+  function cancelEdit() {
+    setIsEditing(false);
   }
 
   const selectedCount = isStep3 ? selectedGrads.size : selected.size;
@@ -205,7 +229,7 @@ export default function AdminEmailsPage() {
           {STEPS.map((s, i) => (
             <button
               key={s.id}
-              onClick={() => { setActiveStep(i); setSelected(new Set()); setSelectedGrads(new Set()); }}
+              onClick={() => { setActiveStep(i); setSelected(new Set()); setSelectedGrads(new Set()); setIsEditing(false); }}
               className={`flex-1 rounded-2xl border p-4 text-left transition-all ${
                 activeStep === i
                   ? `${s.border} ${s.bg} ring-1 ring-white/10`
@@ -221,16 +245,43 @@ export default function AdminEmailsPage() {
           ))}
         </div>
 
-        {/* ── 이메일 템플릿 미리보기 ── */}
+        {/* ── 이메일 템플릿 편집 ── */}
         <div className="panel rounded-2xl p-5 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-white">이메일 템플릿</h2>
-            <button
-              onClick={() => setPreviewOpen(true)}
-              className="text-xs text-white/40 hover:text-white/70 border border-white/10 rounded-lg px-3 py-1 transition"
-            >
-              전체 미리보기
-            </button>
+            <div className="flex items-center gap-2">
+              {isEditing ? (
+                <>
+                  <button
+                    onClick={cancelEdit}
+                    className="text-xs text-white/40 hover:text-white/70 border border-white/10 rounded-lg px-3 py-1 transition"
+                  >
+                    취소
+                  </button>
+                  <button
+                    onClick={saveEdit}
+                    className="text-xs bg-red-700 hover:bg-red-600 text-white font-semibold rounded-lg px-3 py-1 transition"
+                  >
+                    저장
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={startEdit}
+                    className="text-xs text-white/40 hover:text-white/70 border border-white/10 rounded-lg px-3 py-1 transition"
+                  >
+                    편집
+                  </button>
+                  <button
+                    onClick={() => setPreviewOpen(true)}
+                    className="text-xs text-white/40 hover:text-white/70 border border-white/10 rounded-lg px-3 py-1 transition"
+                  >
+                    전체 미리보기
+                  </button>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="rounded-xl bg-black/30 border border-white/8 px-4 py-3 space-y-2">
@@ -245,13 +296,30 @@ export default function AdminEmailsPage() {
             <div className="border-t border-white/5" />
             <div className="flex gap-2 items-center">
               <span className="text-xs text-white/30 w-14 shrink-0">제목</span>
-              <span className="text-xs text-white/80 font-medium">{step.subject}</span>
+              {isEditing ? (
+                <input
+                  value={editDraft.subject}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, subject: e.target.value }))}
+                  className="flex-1 text-xs bg-white/5 border border-white/15 rounded-lg px-2 py-1 text-white/90 outline-none focus:border-red-500/50 transition"
+                />
+              ) : (
+                <span className="text-xs text-white/80 font-medium">{currentTemplate.subject}</span>
+              )}
             </div>
           </div>
 
-          <pre className="text-xs text-white/50 leading-relaxed whitespace-pre-wrap rounded-xl bg-black/20 border border-white/5 px-4 py-3 max-h-48 overflow-y-auto">
-            {step.body}
-          </pre>
+          {isEditing ? (
+            <textarea
+              value={editDraft.body}
+              onChange={(e) => setEditDraft((d) => ({ ...d, body: e.target.value }))}
+              rows={12}
+              className="w-full text-xs text-white/70 leading-relaxed bg-black/20 border border-white/15 focus:border-red-500/50 rounded-xl px-4 py-3 outline-none resize-none transition font-mono"
+            />
+          ) : (
+            <pre className="text-xs text-white/50 leading-relaxed whitespace-pre-wrap rounded-xl bg-black/20 border border-white/5 px-4 py-3 max-h-48 overflow-y-auto">
+              {currentTemplate.body}
+            </pre>
+          )}
 
           {/* 첨부파일 업로드 (Step 1/2) */}
           {!isStep3 && (
@@ -499,11 +567,11 @@ export default function AdminEmailsPage() {
                 <div className="border-t border-white/5" />
                 <div className="flex gap-3">
                   <span className="text-white/30 w-10 shrink-0">제목</span>
-                  <span className="text-white/80 font-medium">{step.subject}</span>
+                  <span className="text-white/80 font-medium">{currentTemplate.subject}</span>
                 </div>
               </div>
               <pre className="text-sm text-white/60 leading-relaxed whitespace-pre-wrap rounded-xl bg-black/20 border border-white/5 px-5 py-4">
-                {step.body}
+                {currentTemplate.body}
               </pre>
               {!isStep3 && step.attachments.length > 0 && (
                 <div className="flex gap-2 flex-wrap">
