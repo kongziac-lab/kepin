@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { PortalShell } from '@/components/portal-shell';
+import { NameCrossValidator } from '@/components/name-cross-validator';
 const PASSPORT_KEY = 'kepin_passport_v1';
 
 /* ── Nomination mock data ──────────────────────────────────────────────── */
@@ -54,6 +55,7 @@ export default function ApplyPage() {
 
   const [form, setForm] = useState({
     nameKo:        '',
+    nameEn:        '',   // 노미네이션 이름 기반, 여권 대체 시 업데이트
     email:         '',
     address:       '',
     phone:         '',
@@ -168,11 +170,33 @@ export default function ApplyPage() {
           {/* ══ 2. 개인정보 ══════════════════════════════════════════════ */}
           <Section title="개인정보">
             <div className="grid grid-cols-8 gap-3">
-              <div className="col-span-4">
-                <Cell label="영문성명" badge="linked" required>
-                  <input className="input" value={nominationData.nameEn} disabled readOnly />
-                </Cell>
+
+              {/* ── 영문성명 교차검증 ── */}
+              <div className="col-span-8 space-y-2">
+                <label className="text-[0.7rem] font-semibold uppercase tracking-widest text-white/35 select-none leading-none flex items-center gap-1.5">
+                  영문성명
+                  <span className="text-red-500 ml-0.5 normal-case">*</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-900/50 text-green-300 font-semibold normal-case tracking-normal">노미네이션</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-900/50 text-blue-300 font-semibold normal-case tracking-normal">여권</span>
+                </label>
+                <NameCrossValidator
+                  nominationName={nominationData.nameEn}
+                  passportName={passportData.nameEn}
+                  currentName={form.nameEn ?? nominationData.nameEn}
+                  onReplaceWithPassport={() =>
+                    !ro && setForm(prev => ({ ...prev, nameEn: passportData.nameEn }))
+                  }
+                  readOnly={ro}
+                />
+                <input
+                  className="input"
+                  value={form.nameEn ?? nominationData.nameEn}
+                  onChange={e => !ro && setForm(prev => ({ ...prev, nameEn: e.target.value }))}
+                  readOnly={ro}
+                  placeholder="영문 이름"
+                />
               </div>
+
               <div className="col-span-4">
                 <Cell label="한글이름" required>
                   <input

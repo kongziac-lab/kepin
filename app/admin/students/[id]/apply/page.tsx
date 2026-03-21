@@ -4,6 +4,11 @@ import { useState, use } from "react";
 import Link from "next/link";
 import { PortalShell } from "@/components/portal-shell";
 import { studentProfile } from "@/lib/mock-data";
+import { NameCrossValidator } from "@/components/name-cross-validator";
+
+/* ── 노미네이션 / 여권 원본 이름 (교차검증용 소스 데이터) ──────────── */
+const NOMINATION_NAME = "ANNA LEE";     // 파트너대학이 제출한 노미네이션 이름
+const PASSPORT_NAME   = "ANNA LI";     // 여권 OCR로 추출한 이름 (철자 오류 시나리오)
 
 /* ── 첨부파일 정의 ──────────────────────────────────────────────────── */
 const ATTACHMENTS = [
@@ -164,15 +169,31 @@ export default function AdminStudentApplyPage({
         {/* ══ 2. 개인정보 ════════════════════════════════════════════════ */}
         <Section title="개인정보">
           <div className="grid grid-cols-8 gap-3">
-            <div className="col-span-4">
-              <Cell label="영문성명" badge="linked" required>
-                <input
-                  className="input"
-                  value={form.nameEn}
-                  onChange={(e) => setField("nameEn", e.target.value)}
-                />
-              </Cell>
+
+            {/* ── 영문성명 교차검증 ── */}
+            <div className="col-span-8 space-y-2">
+              <label className="text-[0.7rem] font-semibold uppercase tracking-widest text-white/35 select-none leading-none flex items-center gap-1.5">
+                영문성명
+                <span className="text-red-500 ml-0.5 normal-case">*</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-900/50 text-green-300 font-semibold normal-case tracking-normal">노미네이션</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-900/50 text-blue-300 font-semibold normal-case tracking-normal">여권</span>
+              </label>
+              {/* 교차검증 카드 */}
+              <NameCrossValidator
+                nominationName={NOMINATION_NAME}
+                passportName={PASSPORT_NAME}
+                currentName={form.nameEn}
+                onReplaceWithPassport={() => setField("nameEn", PASSPORT_NAME)}
+              />
+              {/* 현재 적용 이름 (직접 수정 가능) */}
+              <input
+                className="input"
+                value={form.nameEn}
+                onChange={(e) => setField("nameEn", e.target.value)}
+                placeholder="영문 이름 입력"
+              />
             </div>
+
             <div className="col-span-4">
               <Cell label="한글이름" required>
                 <input
