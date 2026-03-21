@@ -201,6 +201,32 @@ select.input option {
   transform: translateY(-1px);
 }
 
+/* ── Hero gradient-border buttons ── */
+.btn-hero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.525rem 1.35rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 0.875rem;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(rgba(20, 8, 8, 0.75), rgba(20, 8, 8, 0.75)) padding-box,
+    linear-gradient(135deg, #dc2626, #f97360, #b91c1c) border-box;
+  color: #fff;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.btn-hero:hover {
+  background:
+    linear-gradient(rgba(10, 3, 3, 0.90), rgba(10, 3, 3, 0.90)) padding-box,
+    linear-gradient(135deg, #7f1d1d, #991b1b, #7f1d1d) border-box;
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(185, 28, 28, 0.35);
+}
+
 /* ── Table ── */
 .table-wrap {
   overflow: hidden;

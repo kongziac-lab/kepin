@@ -101,7 +101,7 @@ export default function HomePage() {
           className="flex flex-col"
         >
           {/* Hero content — grows to fill space */}
-          <div className="flex-1 flex flex-col items-center justify-center text-center px-6 py-16">
+          <div className="flex-1 flex flex-col items-center justify-center text-center px-6 py-10">
             {/* Chip */}
             <div className="flex justify-center mb-7 anim-up">
               <div className="chip">
@@ -123,11 +123,11 @@ export default function HomePage() {
             </p>
 
             <div className="mt-10 flex flex-wrap justify-center gap-4 anim-up d3">
-              <Link href="/student/dashboard" className="button-primary">
-                학생 포털 보기 →
+              <Link href="/student/dashboard" className="btn-hero">
+                학생 포털 →
               </Link>
-              <Link href="/admin/dashboard" className="button-secondary">
-                관리자 보드
+              <Link href="/partner/dashboard" className="btn-hero">
+                파트너 포털 →
               </Link>
             </div>
           </div>

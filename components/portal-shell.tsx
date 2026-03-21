@@ -85,7 +85,7 @@ export function PortalShell({ area, title, description, children }: PortalShellP
           borderBottom: "1px solid rgba(255, 255, 255, 0.06)"
         }}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
           <Link href="/" className="flex items-center gap-2.5">
             <div
               className="flex h-8 w-8 items-center justify-center rounded-xl text-sm font-black text-white"
@@ -113,45 +113,39 @@ export function PortalShell({ area, title, description, children }: PortalShellP
         </div>
       </header>
 
+      {/* ── Tab nav ── */}
+      <div
+        style={{
+          background: "rgba(12,10,10,0.6)",
+          borderBottom: "1px solid rgba(255,255,255,0.06)"
+        }}
+      >
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex overflow-x-auto gap-1">
+            {navByArea[area].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-2 px-4 py-3 text-sm text-white/45 whitespace-nowrap transition-all duration-200 hover:text-white border-b-2 border-transparent hover:border-red-600/60"
+              >
+                <span className="text-base">{item.icon}</span>
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* ── Content area ── */}
-      <div className="mx-auto max-w-7xl px-6 py-10">
+      <div className="mx-auto max-w-7xl px-6 py-8">
         {/* Page heading */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-black tracking-tight">{title}</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-white/44">{description}</p>
+        <div className="mb-6">
+          <h1 className="text-2xl font-black tracking-tight">{title}</h1>
+          <p className="mt-1.5 max-w-2xl text-sm leading-6 text-white/44">{description}</p>
         </div>
 
-        {/* Sidebar + main grid */}
-        <div className="grid gap-6 lg:grid-cols-[212px_minmax(0,1fr)]">
-          {/* Sidebar */}
-          <aside
-            className="h-fit rounded-3xl p-3"
-            style={{
-              background: "rgba(255,255,255,0.035)",
-              border: "1px solid rgba(255,255,255,0.07)",
-              backdropFilter: "blur(12px)"
-            }}
-          >
-            <div className="mb-1.5 px-3 pt-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-white/22">
-              Navigation
-            </div>
-            <div className="space-y-0.5">
-              {navByArea[area].map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="flex items-center gap-2.5 rounded-2xl px-3 py-2.5 text-sm text-white/52 transition-all duration-200 hover:bg-white/6 hover:text-white"
-                >
-                  <span className="text-sm flex-shrink-0 w-5 text-center">{item.icon}</span>
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-          </aside>
-
-          {/* Main content */}
-          <main className="min-w-0 space-y-6">{children}</main>
-        </div>
+        {/* Main content */}
+        <main className="space-y-6">{children}</main>
       </div>
     </div>
   );
