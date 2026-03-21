@@ -150,42 +150,40 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ PARTNER MAP ══════════════ */}
-        <section id="map-section" className="border-t border-white/5 min-h-screen flex flex-col justify-center py-12 scroll-mt-14">
-          <div className="mx-auto max-w-7xl px-6">
-            <div className="text-center mb-5">
-              <div className="text-xs font-bold uppercase tracking-[0.18em] text-red-500 mb-3">
-                Partner Network
+        <section
+          id="map-section"
+          className="border-t border-white/5 flex flex-col scroll-mt-14"
+          style={{ height: "calc(100vh - 52px)" }}
+        >
+          <div className="mx-auto max-w-7xl w-full px-6 flex flex-col flex-1 overflow-hidden">
+            {/* Title + stats row */}
+            <div className="flex items-center justify-between py-3 flex-shrink-0">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-red-500">Partner Network</div>
+                <h2 className="text-xl font-bold tracking-tight">Partner Universities Worldwide</h2>
               </div>
-              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-                Partner Universities Worldwide
-              </h2>
-            </div>
-
-            {/* Map stats */}
-            <div className="grid grid-cols-4 gap-3 mb-5">
-              <div className="glass-r rounded-lg px-3 py-2 text-center">
-                <div className="text-lg font-bold text-red-400">247</div>
-                <div className="text-[11px] text-white/40 mt-0.5">Total Partners</div>
-              </div>
-              <div className="glass rounded-lg px-3 py-2 text-center">
-                <div className="text-lg font-bold text-amber-400">38</div>
-                <div className="text-[11px] text-white/40 mt-0.5">Active This Semester</div>
-              </div>
-              <div className="glass rounded-lg px-3 py-2 text-center">
-                <div className="text-lg font-bold text-white">83</div>
-                <div className="text-[11px] text-white/40 mt-0.5">Countries</div>
-              </div>
-              <div className="glass rounded-lg px-3 py-2 text-center">
-                <div className="text-lg font-bold text-emerald-400">124</div>
-                <div className="text-[11px] text-white/40 mt-0.5">Students Nominated</div>
+              <div className="flex gap-2">
+                {[
+                  { val: "247", label: "Partners",  color: "text-red-400"     },
+                  { val: "38",  label: "Active",    color: "text-amber-400"   },
+                  { val: "83",  label: "Countries", color: "text-white"       },
+                  { val: "124", label: "Nominated", color: "text-emerald-400" },
+                ].map(({ val, label, color }) => (
+                  <div key={label} className="glass rounded-lg px-3 py-1.5 text-center min-w-[64px]">
+                    <div className={`text-base font-bold ${color}`}>{val}</div>
+                    <div className="text-[10px] text-white/40">{label}</div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Leaflet map */}
-            <PartnerMap />
+            {/* Map — fills remaining space */}
+            <div className="flex-1 min-h-0">
+              <PartnerMap />
+            </div>
 
             {/* Legend */}
-            <div className="flex flex-wrap gap-5 mt-5">
+            <div className="flex flex-wrap gap-5 py-2 flex-shrink-0">
               <div className="flex items-center gap-2 text-xs text-white/45">
                 <span className="inline-block h-3 w-3 rounded-full bg-red-500" />
                 Nomination submitted this semester
@@ -262,7 +260,7 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ WORKFLOW ══════════════ */}
-        <section id="workflow" className="border-t border-white/5 min-h-screen flex flex-col justify-center py-16 scroll-mt-14">
+        <section id="workflow" className="border-t border-white/5 flex flex-col justify-center scroll-mt-14" style={{ height: "calc(100vh - 52px)" }}>
           <div className="mx-auto max-w-7xl px-6">
             <SectionTitle
               eyebrow="Workflow"
@@ -328,7 +326,7 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ FAQ ══════════════ */}
-        <section id="faq" className="border-t border-white/5 min-h-screen flex flex-col justify-center py-16 scroll-mt-14">
+        <section id="faq" className="border-t border-white/5 flex flex-col justify-center scroll-mt-14" style={{ height: "calc(100vh - 52px)" }}>
           <div className="mx-auto max-w-3xl px-6">
             <div className="text-center mb-14">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-red-500 mb-4">FAQ</div>

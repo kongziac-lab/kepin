@@ -165,9 +165,7 @@ export function PartnerMap() {
       id="partner-map-el"
       ref={mapRef}
       style={{
-        height: "calc(100vh - 340px)",
-        minHeight: "340px",
-        maxHeight: "540px",
+        height: "100%",
         width: "100%",
         background: "#1a0808",
         borderRadius: "1rem",
