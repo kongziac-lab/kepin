@@ -39,14 +39,19 @@ export async function proxy(request: NextRequest) {
   // Login pages are never protected
   const LOGIN_PAGES = ["/admin/login", "/auth/partner", "/auth/student"];
   if (LOGIN_PAGES.includes(path)) {
-    // Already logged in → redirect to dashboard
+    // Already logged in → redirect to dashboard (only if same-role login page)
     if (user) {
       const { data: profile } = await supabase
         .from("profiles")
         .select("role")
         .eq("id", user.id)
         .single();
-      if (profile) {
+      // Admin visiting their own login page → redirect to admin dashboard
+      if (profile?.role === "admin" && path === "/admin/login") {
+        return NextResponse.redirect(new URL(ROLE_HOME["admin"], request.url));
+      }
+      // Non-admin visiting their role's login → redirect to their dashboard
+      if (profile && profile.role !== "admin") {
         return NextResponse.redirect(new URL(ROLE_HOME[profile.role as string], request.url));
       }
     }
@@ -73,8 +78,9 @@ export async function proxy(request: NextRequest) {
         .eq("id", user.id)
         .single();
 
-      if (!profile || profile.role !== requiredRole) {
-        // Wrong role → redirect to correct dashboard
+      // Admin can access all portals
+      const isAdmin = profile?.role === "admin";
+      if (!profile || (!isAdmin && profile.role !== requiredRole)) {
         const redirect = profile ? ROLE_HOME[profile.role] : "/";
         return NextResponse.redirect(new URL(redirect, request.url));
       }
