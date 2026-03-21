@@ -1,13 +1,44 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const navItems = [
-  { href: "#overview",    label: "Overview"    },
+  { href: "#home",        label: "Home"        },
   { href: "#map-section", label: "Partner Map" },
-  { href: "#workflow",    label: "Workflow"    },
-  { href: "#faq",         label: "FAQ"         }
+  { href: "#workflow",    label: "Workflow"     },
+  { href: "#faq",         label: "FAQ"          },
 ];
 
+const sectionIds = ["home", "map-section", "workflow", "faq"];
+
 export function SiteHeader() {
+  const [active, setActive] = useState("home");
+
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActive(id); },
+        { rootMargin: "-40% 0px -55% 0px" }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  function handleNav(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
+    e.preventDefault();
+    const id = href.replace("#", "");
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   return (
     <header
       className="sticky top-0 z-40 backdrop-blur-xl"
@@ -32,16 +63,31 @@ export function SiteHeader() {
         </Link>
 
         {/* Nav */}
-        <nav className="hidden items-center gap-7 text-sm text-white/50 md:flex">
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="transition-colors duration-200 hover:text-white"
-            >
-              {item.label}
-            </a>
-          ))}
+        <nav className="hidden items-center gap-1 md:flex">
+          {navItems.map((item) => {
+            const id = item.href.replace("#", "");
+            const isActive = active === id;
+            return (
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={(e) => handleNav(e, item.href)}
+                className="relative px-3 py-1.5 text-sm rounded-lg transition-all duration-200"
+                style={{
+                  color: isActive ? "#fff" : "rgba(255,255,255,0.45)",
+                  background: isActive ? "rgba(185,28,28,0.12)" : "transparent",
+                }}
+              >
+                {item.label}
+                {isActive && (
+                  <span
+                    className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full"
+                    style={{ background: "linear-gradient(90deg, #b91c1c, #f97360)" }}
+                  />
+                )}
+              </a>
+            );
+          })}
         </nav>
 
         {/* Auth buttons */}

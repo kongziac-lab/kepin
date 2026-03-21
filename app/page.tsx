@@ -97,8 +97,9 @@ export default function HomePage() {
       <main>
         {/* ══════════════ HERO + MARQUEE (one screen) ══════════════ */}
         <section
+          id="home"
           style={{ minHeight: "calc(100vh - 64px)" }}
-          className="flex flex-col"
+          className="flex flex-col scroll-mt-14"
         >
           {/* Hero content — grows to fill space */}
           <div className="flex-1 flex flex-col items-center justify-center text-center px-6 py-10">
@@ -149,7 +150,7 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ PARTNER MAP ══════════════ */}
-        <section id="map-section" className="border-t border-white/5 py-10 scroll-mt-14">
+        <section id="map-section" className="border-t border-white/5 min-h-screen flex flex-col justify-center py-12 scroll-mt-14">
           <div className="mx-auto max-w-7xl px-6">
             <div className="text-center mb-5">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-red-500 mb-3">
@@ -261,7 +262,7 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ WORKFLOW ══════════════ */}
-        <section id="workflow" className="border-t border-white/5 py-24 scroll-mt-14">
+        <section id="workflow" className="border-t border-white/5 min-h-screen flex flex-col justify-center py-16 scroll-mt-14">
           <div className="mx-auto max-w-7xl px-6">
             <SectionTitle
               eyebrow="Workflow"
@@ -327,7 +328,7 @@ export default function HomePage() {
         </section>
 
         {/* ══════════════ FAQ ══════════════ */}
-        <section id="faq" className="border-t border-white/5 py-24 scroll-mt-14">
+        <section id="faq" className="border-t border-white/5 min-h-screen flex flex-col justify-center py-16 scroll-mt-14">
           <div className="mx-auto max-w-3xl px-6">
             <div className="text-center mb-14">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-red-500 mb-4">FAQ</div>
