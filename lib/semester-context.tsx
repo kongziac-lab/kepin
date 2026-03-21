@@ -37,8 +37,8 @@ export const SEMESTER_OPTIONS: {
   label: string;
   tag:   string;
 }[] = [
-  { type: "exchange",   term: "fall",   label: "가을학기", tag: "교환학생" },
   { type: "exchange",   term: "spring", label: "봄학기",   tag: "교환학생" },
+  { type: "exchange",   term: "fall",   label: "가을학기", tag: "교환학생" },
   { type: "short_term", term: "summer", label: "여름학기", tag: "단기수학" },
   { type: "short_term", term: "winter", label: "겨울학기", tag: "단기수학" },
 ];
