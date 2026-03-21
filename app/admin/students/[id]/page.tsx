@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, use } from "react";
+import Link from "next/link";
 import { PortalShell } from "@/components/portal-shell";
 import { StatusTimeline } from "@/components/status-timeline";
 import { studentProfile } from "@/lib/mock-data";
@@ -82,12 +83,20 @@ export default function AdminStudentDetailPage({
                   </button>
                 </>
               ) : (
-                <button
-                  onClick={startEdit}
-                  className="text-xs text-white/40 hover:text-white/70 border border-white/10 rounded-lg px-3 py-1.5 transition"
-                >
-                  편집
-                </button>
+                <>
+                  <Link
+                    href={`/admin/students/${encodeURIComponent(id)}/apply` as never}
+                    className="text-xs text-white/40 hover:text-white/70 border border-white/10 rounded-lg px-3 py-1.5 transition inline-flex items-center gap-1"
+                  >
+                    📋 신청서 편집
+                  </Link>
+                  <button
+                    onClick={startEdit}
+                    className="text-xs text-white/40 hover:text-white/70 border border-white/10 rounded-lg px-3 py-1.5 transition"
+                  >
+                    편집
+                  </button>
+                </>
               )}
             </div>
           </div>
