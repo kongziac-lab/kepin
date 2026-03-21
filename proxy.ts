@@ -36,6 +36,23 @@ export async function proxy(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   const path = request.nextUrl.pathname;
 
+  // Login pages are never protected
+  const LOGIN_PAGES = ["/admin/login", "/auth/partner", "/auth/student"];
+  if (LOGIN_PAGES.includes(path)) {
+    // Already logged in → redirect to dashboard
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+      if (profile) {
+        return NextResponse.redirect(new URL(ROLE_HOME[profile.role as string], request.url));
+      }
+    }
+    return response;
+  }
+
   // Check if the path is protected
   for (const [prefix, requiredRole] of Object.entries(PROTECTED)) {
     if (path.startsWith(prefix)) {
@@ -63,19 +80,6 @@ export async function proxy(request: NextRequest) {
       }
 
       break;
-    }
-  }
-
-  // Already logged in → redirect away from login pages
-  if (user && (path.startsWith("/auth/") || path === "/admin/login")) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    if (profile) {
-      return NextResponse.redirect(new URL(ROLE_HOME[profile.role], request.url));
     }
   }
 
