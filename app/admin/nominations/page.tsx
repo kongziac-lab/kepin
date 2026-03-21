@@ -274,60 +274,65 @@ export default function AdminNominationsPage() {
         </div>
 
         {/* ── 필터 & 검색 ── */}
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* 검색 */}
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="대학명 · 국가 검색"
-            className="input text-sm py-2 px-3 w-52"
+            className="input text-sm py-2 px-3 w-48 shrink-0"
           />
-          <div className="flex gap-1.5 flex-wrap">
-            {(["all", "submitted", "partial", "not_submitted"] as const).map((f) => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`text-xs px-3 py-1.5 rounded-xl border transition font-medium ${
-                  filter === f
-                    ? "bg-red-700 border-red-600 text-white"
-                    : "border-white/10 text-white/45 hover:border-white/20 hover:text-white/70"
-                }`}
-              >
-                {f === "all" ? "전체" : submissionLabel[f]}
-              </button>
-            ))}
 
-            {/* 이름 불일치 필터 버튼 */}
+          {/* 구분선 */}
+          <span className="h-4 w-px bg-white/10 shrink-0" />
+
+          {/* 제출 상태 필터 */}
+          {(["all", "submitted", "partial", "not_submitted"] as const).map((f) => (
             <button
-              onClick={() => setFilter(filter === "mismatch" ? "all" : "mismatch")}
-              className={`relative text-xs px-3 py-1.5 rounded-xl border transition font-medium flex items-center gap-1.5 ${
-                filter === "mismatch"
-                  ? "bg-amber-700/80 border-amber-500/60 text-white"
-                  : "border-amber-500/30 text-amber-400/80 hover:border-amber-500/60 hover:text-amber-300"
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`text-xs px-3 py-1.5 rounded-xl border transition font-medium shrink-0 ${
+                filter === f
+                  ? "bg-red-700 border-red-600 text-white"
+                  : "border-white/10 text-white/45 hover:border-white/20 hover:text-white/70"
               }`}
             >
-              {/* 불일치 건수가 있고 선택 안 된 상태일 때 pulse */}
-              {mismatchCount > 0 && filter !== "mismatch" && (
-                <span className="relative flex h-1.5 w-1.5 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-400" />
-                </span>
-              )}
-              ⚠ 이름 불일치
-              {mismatchCount > 0 && (
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                  filter === "mismatch"
-                    ? "bg-white/20 text-white"
-                    : "bg-amber-900/60 text-amber-300"
-                }`}>
-                  {mismatchCount}
-                </span>
-              )}
+              {f === "all" ? "전체" : submissionLabel[f]}
             </button>
-          </div>
+          ))}
 
-          <div className="ml-auto text-xs text-white/30">
+          {/* 구분선 */}
+          <span className="h-4 w-px bg-white/10 shrink-0" />
+
+          {/* 이름 불일치 필터 버튼 */}
+          <button
+            onClick={() => setFilter(filter === "mismatch" ? "all" : "mismatch")}
+            className={`relative text-xs px-3 py-1.5 rounded-xl border transition font-medium flex items-center gap-1.5 shrink-0 ${
+              filter === "mismatch"
+                ? "bg-amber-700/80 border-amber-500/60 text-white"
+                : "border-amber-500/40 text-amber-400 hover:border-amber-500/70 hover:text-amber-300"
+            }`}
+          >
+            {mismatchCount > 0 && filter !== "mismatch" && (
+              <span className="relative flex h-1.5 w-1.5 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-400" />
+              </span>
+            )}
+            <span>⚠ 이름 불일치</span>
+            {mismatchCount > 0 && (
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                filter === "mismatch" ? "bg-white/20 text-white" : "bg-amber-900/70 text-amber-300"
+              }`}>
+                {mismatchCount}
+              </span>
+            )}
+          </button>
+
+          {/* 우측 카운트 */}
+          <span className="ml-auto text-xs text-white/30 shrink-0">
             {filtered.length}개 대학 표시
-          </div>
+          </span>
         </div>
 
         {/* ── 대학 목록 ── */}
