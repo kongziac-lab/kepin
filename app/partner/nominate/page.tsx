@@ -26,7 +26,7 @@ export default function PartnerNominatePage() {
               <option>대학원</option>
             </select>
             <select className="input sm:col-span-2">
-              <option>수학기간</option>
+              <option>입학연도 및 학기</option>
               <option>2026 Fall</option>
               <option>2027 Spring</option>
             </select>

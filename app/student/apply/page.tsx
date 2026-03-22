@@ -329,12 +329,12 @@ export default function ApplyPage() {
                     disabled={ro}
                   >
                     <option>교환학생</option>
-                    <option>방문학생</option>
+                    <option>단기수학생</option>
                   </select>
                 </Cell>
               </div>
               <div className="col-span-2">
-                <Cell label="수학학기" required>
+                <Cell label="입학연도 및 학기" required>
                   <select
                     className="input"
                     value={form.semester}

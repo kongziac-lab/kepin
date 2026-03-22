@@ -19,7 +19,7 @@ const FIELDS: { key: FieldKey; label: string; type?: string }[] = [
   { key: "passportNo",    label: "여권번호" },
   { key: "major",         label: "전공" },
   { key: "dormitory",     label: "기숙사" },
-  { key: "intake",        label: "수학기간" },
+  { key: "intake",        label: "입학연도 및 학기" },
 ];
 
 export default function AdminStudentDetailPage({

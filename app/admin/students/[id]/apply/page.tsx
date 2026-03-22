@@ -146,7 +146,7 @@ export default function AdminStudentApplyPage({
             <Cell label="접수일자">
               <input className="input" defaultValue="2025.11.13" />
             </Cell>
-            <Cell label="수학기간" badge="admin">
+            <Cell label="입학연도 및 학기" badge="admin">
               <input
                 className="input"
                 value={form.intake}
@@ -160,7 +160,7 @@ export default function AdminStudentApplyPage({
                 onChange={(e) => setField("admissionType", e.target.value)}
               >
                 <option>교환학생</option>
-                <option>방문학생</option>
+                <option>단기수학생</option>
               </select>
             </Cell>
           </div>
@@ -358,7 +358,7 @@ export default function AdminStudentApplyPage({
                   onChange={(e) => setField("admissionType", e.target.value)}
                 >
                   <option>교환학생</option>
-                  <option>방문학생</option>
+                  <option>단기수학생</option>
                 </select>
               </Cell>
             </div>

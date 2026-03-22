@@ -21,7 +21,7 @@ const statusColor: Record<string, string> = {
 
 /* ── 엑셀(CSV) 다운로드 유틸 ─────────────────────────────────────── */
 function toCSV(rows: typeof studentApplications) {
-  const headers = ["접수번호", "학생명", "국가", "파트너대학", "수학기간", "기숙사 종류", "단계"];
+  const headers = ["접수번호", "학생명", "국가", "파트너대학", "입학연도 및 학기", "기숙사 종류", "단계"];
   const lines = [
     headers.join(","),
     ...rows.map((r) =>
@@ -156,7 +156,7 @@ export default function AdminStudentsPage() {
               value={intakeSearch}
               onChange={(e) => setIntakeSearch(e.target.value)}
               className="input text-sm py-2 px-3"
-              placeholder="수학기간 (예: 2026 Fall)"
+              placeholder="입학연도 및 학기 (예: 2026 Fall)"
             />
           </div>
         </div>
@@ -234,7 +234,7 @@ export default function AdminStudentsPage() {
                     <th>학생명</th>
                     <th>국가</th>
                     <th>파트너대학</th>
-                    <th>수학기간</th>
+                    <th>입학연도 및 학기</th>
                     <th>기숙사 종류</th>
                     <th>단계</th>
                     <th>상세</th>
