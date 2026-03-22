@@ -111,7 +111,7 @@ export function PartnerMap() {
         // Markers
         partnerData.forEach((d) => {
           const color = d.active ? "#ef4444" : "#f59e0b";
-          const size  = d.active ? 10 : 7;
+          const size  = 7;
 
           const marker = L.circleMarker([d.lat, d.lng], {
             radius:      size,
